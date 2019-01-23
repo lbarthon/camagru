@@ -31,6 +31,9 @@ class GeneralController extends Controller {
     }
 
     public function login() {
-        $this->render('General.Login');
+        $login_err = "<p class='flash_err'>" . $this->_model->getFlash('login_err') . "</p>";
+        $create_err = "<p class='flash_err'>" . $this->_model->getFlash('create_err') . "</p>";
+        $create_success = "<p class='flash_success'>" . $this->_model->getFlash('create_success') . "</p>";
+        $this->render('General.Login', compact('login_err', 'create_err', 'create_success'));
     }
 }

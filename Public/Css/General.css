@@ -19,6 +19,11 @@ body, html {
     background-color: green;
 }
 
+.flash_err {
+    color: lightcoral;
+    font-style: italic;
+}
+
 footer {
     position: relative;
     min-height: 7%;

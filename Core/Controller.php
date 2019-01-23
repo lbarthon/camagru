@@ -13,7 +13,7 @@ abstract class Controller {
     protected $_template;
     protected $_model;
 
-    public function __construct($url) {
+    public function __construct($url = "") {
         $this->_url = $url;
     }
 
@@ -23,6 +23,11 @@ abstract class Controller {
     }
 
     public function render($file, $values = []) {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $token = bin2hex(random_bytes(50));
+        $_SESSION['token'] = $token;
         ob_start();
         extract($values);
         require $this->_viewPath . str_replace('.', '/', $file) . '.php';

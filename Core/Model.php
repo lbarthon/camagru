@@ -45,4 +45,40 @@ abstract class Model {
                 . "<br>" . $e->getMessage(), $e->getCode());
         }
     }
+
+    public function compareTokens($token) {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['token']) && !empty($_SESSION['token'])) {
+            if ($_SESSION['token'] === $token) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getFlash($name) {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['flash']) && !empty($_SESSION['flash'])) {
+            if (isset($_SESSION['flash'][$name])) {
+                $var = $_SESSION['flash'][$name];
+                unset($_SESSION['flash'][$name]);
+                return $var;
+            }
+        }
+        return "";
+    }
+
+    public function setFlash($name, $flash) {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!isset($_SESSION['flash']) || empty($_SESSION['flash'])) {
+            $_SESSION['flash'] = [];
+        }
+        $_SESSION['flash'][$name] = $flash;
+    }
 }

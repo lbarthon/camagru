@@ -10,10 +10,18 @@ use Core\Router;
 $url = $_GET['path'];
 
 $router = new Router();
+
 $router->route("", "App\General\GeneralController@index");
 $router->route("index", "App\General\GeneralController@index");
-$router->route("setup", "Config\SetupController@setup");
 $router->route("account", "App\General\GeneralController@myAccount");
+
+$router->route("user/login", "App\Users\UsersController@login");
+$router->route("user/create", "App\Users\UsersController@create");
+$router->route("user/resetpw", "App\Users\UsersController@resetpw");
+$router->route("user/logout", "App\Users\UsersController@logout");
+
+$router->route("setup", "Config\SetupController@setup");
+
 $ret = $router->execute($url);
 
 if (!$ret) {

@@ -10,7 +10,7 @@ class GeneralModel extends Model {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        if (isset($_SESSION['email']) && !empty($_SESSION['email'])) {
+        if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
             return true;
         }
         return false;
