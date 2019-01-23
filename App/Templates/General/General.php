@@ -10,27 +10,30 @@
 <body>
     <div id="header">
         <p>Header</p>
+        <a href="account">Mon compte</a>
     </div>
     <div id="center">
         <?= $content ?>
     </div>
-    <div id="footer">
-        <div class="social-container">
-            <a href="https://www.instagram.com/?hl=fr">
-                <img src="Pictures/Instagram.png" alt="Instagram Logo" class="social">
-            </a>
-        </div>
-        <div class="social-container">
-            <a href="https://www.facebook.fr/">
-                <img src="Pictures/Facebook.png" alt="Facebook Logo" class="social">
-            </a>
-        </div>
-        <div class="social-container">
-            <a href="https://www.twitter.fr/">
-                <img src="Pictures/Twitter.png" alt="Twitter Logo" class="social">
-            </a>
+    <footer>
+        <div class="social-networks">
+            <div class="social">
+                <a href="https://www.instagram.com/?hl=fr">
+                    <img src="Pictures/Instagram.png" alt="Instagram Logo">
+                </a>
+            </div>
+            <div class="social">
+                <a href="https://www.facebook.fr/">
+                    <img src="Pictures/Facebook.png" alt="Facebook Logo">
+                </a>
+            </div>
+            <div class="social">
+                <a href="https://www.twitter.com/">
+                    <img src="Pictures/Twitter.png" alt="Twitter Logo">
+                </a>
+            </div>
         </div>
         <h3>© lbarthon 2019</h3>
-    </div>
+    </footer>
 </body>
 </html>

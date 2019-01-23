@@ -20,4 +20,17 @@ class GeneralController extends Controller {
         $url = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mauris neque, blandit sit amet convallis.";
         $this->render('General.Index', compact('url'));
     }
+
+    public function myAccount() {
+        if ($this->_model->isLogged()) {
+            $this->render('General.Account');
+        }
+        else {
+            $this->login();
+        }
+    }
+
+    public function login() {
+        $this->render('General.Login');
+    }
 }
