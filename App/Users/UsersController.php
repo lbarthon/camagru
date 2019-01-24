@@ -8,7 +8,7 @@ use App\Users\UsersModel;
 
 class UsersController extends Controller {
 
-    public function __construct($url = "") {
+    public function __construct($url) {
         parent::__construct($url);
         $this->_model = new UsersModel();
         $this->_viewPath = 'App/Views/';
@@ -25,7 +25,6 @@ class UsersController extends Controller {
                 if ($this->_model->auth($_POST['username'], $_POST['password'])) {
                     $_SESSION['user'] = $_POST['username'];
                 }
-                $this->_model->setFlash('popup', 'Connecté avec succès!');
                 $this->redirect("/account");
             }
         }
@@ -39,10 +38,10 @@ class UsersController extends Controller {
         if (isset($_POST) && !empty($_POST) && isset($_POST['create']) && !empty($_POST['create'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
                 $this->_model->addUser($_POST['username'], $_POST['mail'], $_POST['password']);
+                $this->_model->setFlash('popup', 'Compte crée avec succès!');
                 $this->redirect("/account");
             }
         }
-        $this->_model->setFlash('popup', 'Compte crée avec succès!');
         $this->redirect("/index");
     }
 
@@ -50,7 +49,28 @@ class UsersController extends Controller {
      * Email confirmation called here.
      */
     public function confirm() {
-        // TODO -- CONFIRMATION DE MAIL
+        if ($this->_model->confirm($this->_url)) {
+            $this->_model->setFlash('popup', 'Email confirmé avec succès!\nVeuillez maintenant vous connecter.');
+        } else {
+            $this->_model->setFlash('popup', 'Ce lien est inconnu!');
+        }
+        $this->redirect('/account');
+    }
+
+    /**
+     * Function that's called when the user asks for a new password.
+     */
+    public function resetpw_ask() {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['reset']) && !empty($_POST['reset'])) {
+            if ($this->_model->compareTokens($_POST['token'])) {
+                if ($this->_model->createReset($_POST['mail'])) {
+                    $this->_model->setFlash('popup', 'Mail envoyé!');
+                } else {
+                    $this->_model->setFlash('popup', 'Erreur lors de l\'envoi du mail!\nAvez vous un compte?');
+                }
+            }
+        }
+        $this->redirect("/account");
     }
 
     /**
@@ -70,6 +90,7 @@ class UsersController extends Controller {
             }
         }
         $user_id = $this->_model->getUserIdFromUrl($this->_url);
+        die($user_id);
         if ($user_id === -2) {
             $this->_model->setFlash('popup', 'Votre lien a expiré!');
         } else if ($user_id !== -1) {
@@ -93,7 +114,6 @@ class UsersController extends Controller {
         if (isset($_POST) && !empty($_POST) && isset($_POST['logout']) && !empty($_POST['logout'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
                 session_destroy();
-                $this->_model->setFlash('popup', 'Déconnecté avec succès!');
             }
         }
         $this->redirect("/index");

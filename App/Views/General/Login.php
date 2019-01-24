@@ -15,3 +15,9 @@
 </form>
 <?= $create_success ?>
 <?= $create_err ?>
+
+<form action="/user/resetpw_ask" method="post">
+    <input type="email" name="mail" placeholder="Mail" required>
+    <input type="hidden" name="token" value="<?= $token ?>">
+    <input type="submit" name="reset" value="Réinitialiser mon mot de passe">
+</form>

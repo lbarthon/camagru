@@ -26,7 +26,9 @@ $router->route("account", "App\General\GeneralController@myAccount");
 
 $router->route("user/login", "App\Users\UsersController@login");
 $router->route("user/create", "App\Users\UsersController@create");
+$router->route("user/resetpw_ask", "App\Users\UsersController@resetpw_ask");
 $router->route("user/resetpw/(.*)", "App\Users\UsersController@resetpw");
+$router->route("user/confirm/(.*)", "App\Users\UsersController@confirm");
 $router->route("user/logout", "App\Users\UsersController@logout");
 
 $router->route("setup", "Config\SetupController@setup");

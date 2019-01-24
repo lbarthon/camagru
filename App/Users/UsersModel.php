@@ -58,13 +58,43 @@ class UsersModel extends Model {
             $this->setFlash('create_err', "Mail ou nom d'utilisateur déjà utilisé!");
             return false;
         }
-        $stmt = self::$_conn->prepare("INSERT INTO users (username, email, pwd) VALUES (?,?,?)");
-        $stmt->execute([$username, $email, $pwd]);
-        $sender = "mail@website.barthonet.ovh";
-        // Not working -- To fix
-        mail($email, "Confirm email", "HEY PD CONFIRME TON MAIL");
-        // End of not working
+        $conf_link = bin2hex(random_bytes(50));
+        $stmt = self::$_conn->prepare("INSERT INTO users (username, email, pwd, conf_link) VALUES (?,?,?,?)");
+        $stmt->execute([$username, $email, $pwd, $conf_link]);
+    // Not working -- To fix
+        mail($email, "Confirm email", "HEY CONFIRM THIS MAIL");
+    // End of not working
         $this->setFlash('create_success', "Compte créé avec succès!<br>Veuillez maintenant le confirmer grace au lien que vous avez reçu par mail!");
+        return true;
+    }
+
+    /**
+     * Function called that'll confirm the user account so he'll be able to log.
+     */
+    public function confirm($url) {
+        $url = htmlspecialchars(str_replace('user/confirm/', '', $url));
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return false;
+        }
+        try {
+            $stmt = self::$_conn->prepare("SELECT id FROM users WHERE conf_link = ?");
+            $stmt->execute([$url]);
+            $match = $stmt->fetch();
+        } catch (PDOException $e) {
+            return false;
+        }
+        if (!isset($match) || empty($match)) {
+            return false;
+        }
+        $uid = $match['id'];
+        try {
+            $stmt = self::$_conn->prepare("UPDATE users SET conf_link=NULL,confirmed=1 WHERE id=?");
+            $stmt->execute([$uid]);
+        } catch (PDOException $e) {
+            return false;
+        }
         return true;
     }
 
@@ -122,7 +152,56 @@ class UsersModel extends Model {
     }
 
     /**
-     * Functions that's called to reset pw.
+     * Functions that gets the user id from the mail sent.
+     */
+    public function getUserIdFromMail($mail) {
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return -1;
+        }
+        try {
+            $stmt = self::$_conn->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->execute([$mail]);
+            $match = $stmt->fetch();
+        } catch (PDOException $e) {
+            return -1;
+        }
+        if (!isset($match) || empty($match)) {
+            return -1;
+        }
+        return $match['id'];
+    }
+
+    /**
+     * Function that sends a mail to $mail with the link to reset his password.
+     */
+    public function createReset($mail) {
+        $mail = htmlspecialchars($mail);
+        $uid = $this->getUserIdFromMail($mail);
+        if ($uid !== -1) {
+            $uniqueid = bin2hex(random_bytes(50));
+            try {
+                $this->init();
+            } catch (SqlException $e) {
+                return false;
+            }
+            try {
+                $stmt = self::$_conn->prepare("INSERT INTO resetpw (id_user, uniqueid, `time`) VALUES (?,?,?)");
+                $stmt->execute([$uid, $uniqueid, time()]);
+            } catch (PDOException $e) {
+                return false;
+            }
+        // Not working -- To fix
+            mail($mail, "Reset pwd", "HEY RESET UR PWD");
+        // End of not working
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Functions called to reset pw.
      * It compares the input mail (check) with the flash one we took before.
      * Returns false if reset went wrong, and false otherwise.
      */

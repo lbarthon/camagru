@@ -37,6 +37,7 @@ class SetupModel extends Model {
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             pwd VARCHAR(128) NOT NULL,
+            conf_link VARCHAR(50),
             confirmed BIT DEFAULT 0
             )",
             "CREATE TABLE pictures (
