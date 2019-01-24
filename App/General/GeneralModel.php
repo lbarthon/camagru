@@ -6,6 +6,9 @@ use Core\Model;
 
 class GeneralModel extends Model {
 
+    /**
+     * Basically a function that checks in session if user is logged.
+     */
     public function isLogged() {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

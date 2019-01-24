@@ -13,6 +13,11 @@ use Exceptions\SqlException;
 abstract class Model {
     protected static $_conn;
 
+    /**
+     * Globally init the static sql connection (no db specified).
+     * If $force = true, it'll overrides and delete the old one.
+     * SqlException thrown on error.
+     */
     protected function init_no_db($force = false) {
         require 'Config/Database.php';
         if ($force) {
@@ -30,6 +35,11 @@ abstract class Model {
         }
     }
 
+    /**
+     * Init the static sql connection.
+     * If $force = true, it'll overrides and delete the old one.
+     * SqlException thrown on error.
+     */
     protected function init($force = false) {
         require 'Config/Database.php';
         if ($force) {
@@ -46,6 +56,9 @@ abstract class Model {
         }
     }
 
+    /**
+     * Compare form token and session token, to avoid CSRF.
+     */
     public function compareTokens($token) {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -58,12 +71,15 @@ abstract class Model {
         return false;
     }
 
+    /**
+     * Returns a session flash variable and deletes it.
+     */
     public function getFlash($name) {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         if (isset($_SESSION['flash']) && !empty($_SESSION['flash'])) {
-            if (isset($_SESSION['flash'][$name])) {
+            if (isset($_SESSION['flash'][$name]) && !empty($_SESSION['flash'][$name])) {
                 $var = $_SESSION['flash'][$name];
                 unset($_SESSION['flash'][$name]);
                 return $var;
@@ -72,6 +88,10 @@ abstract class Model {
         return "";
     }
 
+    /**
+     * Sets in the session values a flash variable.
+     * When the getter will be used on it, it'll be destroyed.
+     */
     public function setFlash($name, $flash) {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

@@ -15,16 +15,21 @@ class SetupController extends Controller {
         $this->_template = 'General.General';
     }
 
+    /**
+     * Function that handles the setup form (1st part).
+     * 2nd part just basically prints the page (2nd part).
+     */
     public function setup() {
-        $error = "";
         if (isset($_POST) && !empty($_POST)) {
-            $error = $this->_model->setup();
+            $this->_model->setup();
+            $error = $this->_model->getFlash('setup_error');
             if ($error) {
                 $this->render("Setup", compact('error'));
             } else {
                 $this->redirect("/index");
             }
         } else {
+            $error = "";
             $this->render("Setup", compact('error'));
         }
     }

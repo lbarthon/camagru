@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="Css/General.css">
     <title>Camagru</title>
+    <?= $js ?>
 </head>
 <body>
     <div id="header">

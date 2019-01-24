@@ -16,11 +16,18 @@ class GeneralController extends Controller {
         $this->_template = 'General.General';
     }
 
+    /**
+     * Function that renders the index page.
+     */
     public function index() {
         $url = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mauris neque, blandit sit amet convallis.";
         $this->render('General.Index', compact('url'));
     }
 
+    /**
+     * Function that renders the account page if the user is logged.
+     * If he isn't, it'll render the login page.
+     */
     public function myAccount() {
         if ($this->_model->isLogged()) {
             $this->render('General.Account');
@@ -30,6 +37,9 @@ class GeneralController extends Controller {
         }
     }
 
+    /**
+     * Function that renders the login page.
+     */
     public function login() {
         $login_err = "<p class='flash_err'>" . $this->_model->getFlash('login_err') . "</p>";
         $create_err = "<p class='flash_err'>" . $this->_model->getFlash('create_err') . "</p>";
