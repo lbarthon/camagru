@@ -270,6 +270,8 @@ class UsersModel extends Model {
      */
     public function update($username, $email, $notifs, $pwd = null) {
         $old_username = $_SESSION['user'];
+        // TODO -- Check if username or mail not being used
+        // TODO -- Notifs update (rn won't)
         try {
             $this->init();
         } catch (SqlException $e) {
