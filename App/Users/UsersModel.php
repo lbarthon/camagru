@@ -187,13 +187,13 @@ class UsersModel extends Model {
                 return false;
             }
             try {
-                $stmt = self::$_conn->prepare("INSERT INTO resetpw (id_user, uniqueid, `time`) VALUES (?,?,?)");
+                $stmt = self::$_conn->prepare("INSERT INTO resetpw (id_user, uniqueid, `date`) VALUES (?,?,?)");
                 $stmt->execute([$uid, $uniqueid, time()]);
             } catch (PDOException $e) {
                 return false;
             }
         // Not working -- To fix
-            mail($mail, "Reset pwd", "HEY RESET UR PWD");
+            mail($mail, "Reset pwd", "HEY RESET UR PWD", "From:camagru@lbarthon.fr");
         // End of not working
             return true;
         }
@@ -243,5 +243,43 @@ class UsersModel extends Model {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Check password safety.
+     */
+    public function isPwdSafe($pwd) {
+        $upper = preg_match('#[A-Z]#', $pwd);
+        $lower = preg_match('#[a-z]#', $pwd);
+        $nbr = preg_match('#[\d]#', $pwd);
+        $special = preg_match('#[^a-zA-Z\d]#', $pwd);
+        $len = strlen($pwd);
+        return ($upper >= 1 && $lower >= 1 && $nbr >= 1 && $special >= 1 && $len >= 8);
+    }
+
+    /**
+     * Function that update members informations.
+     * If pwd isn't specified, won't be updated
+     */
+    public function update($username, $email, $notifs, $pwd = null) {
+        $old_username = $_SESSION['username'];
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            $this->setFlash('edit_err', 'Erreur lors de la mise à jour de votre profil.');
+        }
+        try {
+            if ($pwd !== null) {
+                $pwd = hash("whirlpool", $pwd);
+                $stmt = self::$_conn->prepare("UPDATE users SET username=?,email=?,notifs=?,pwd=? WHERE username=?");
+                $stmt->execute([$username, $email, $notifs, $pwd, $old_username]);
+            } else {
+                $stmt = self::$_conn->prepare("UPDATE users SET username=?,email=?,notifs=? WHERE username=?");
+                $stmt->execute([$username, $email, $notifs, $old_username]);
+            }
+        } catch (PDOException $e) {
+            $this->setFlash('edit_err', 'Erreur lors de la mise à jour de votre profil.');
+        }
+        $this->setFlash('edit_success', 'Profil mis à jour avec succès!');
     }
 }

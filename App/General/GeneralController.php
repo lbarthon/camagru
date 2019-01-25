@@ -20,8 +20,7 @@ class GeneralController extends Controller {
      * Function that renders the index page.
      */
     public function index() {
-        $url = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mauris neque, blandit sit amet convallis.";
-        $this->render('General.Index', compact('url'));
+        $this->render('General.Index');
     }
 
     /**
@@ -30,7 +29,11 @@ class GeneralController extends Controller {
      */
     public function myAccount() {
         if ($this->_model->isLogged()) {
-            $this->render('General.Account');
+            $username = $_SESSION['user'];
+            $email = $this->_model->getMailFromSessionUsername();
+            $edit_success = "<p class='flash_success'>" . $this->_model->getFlash('edit_success') . "</p>";
+            $edit_err = "<p class='flash_err'>" . $this->_model->getFlash('edit_err') . "</p>";
+            $this->render('General.Account', compact('username', 'email', 'edit_success'));
         }
         else {
             $this->login();

@@ -24,10 +24,14 @@ body, html {
     font-style: italic;
 }
 
+.flash_success {
+    color: #73cc6b;
+}
+
 footer {
     position: relative;
     min-height: 7%;
-    background-color: pink;
+    background-color: #a9aec1;
 }
 
 footer > h3 {

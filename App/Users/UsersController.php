@@ -37,8 +37,11 @@ class UsersController extends Controller {
     public function create() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['create']) && !empty($_POST['create'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
-                $this->_model->addUser($_POST['username'], $_POST['mail'], $_POST['password']);
-                $this->_model->setFlash('popup', 'Compte crée avec succès!');
+                if ($this->_model->isPwdSafe($_POST['password'])) {
+                    $this->_model->addUser($_POST['username'], $_POST['mail'], $_POST['password']);
+                } else {
+                    $this->_model->setFlash('create_err', "Votre mot de passe n'est pas suffisamment sécurisé!");
+                }
                 $this->redirect("/account");
             }
         }
@@ -55,6 +58,27 @@ class UsersController extends Controller {
             $this->_model->setFlash('popup', 'Ce lien est inconnu!');
         }
         $this->redirect('/account');
+    }
+
+    /**
+     * Function called when an user edits his profile
+     */
+    public function edit() {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['edit']) && !empty($_POST['edit'])) {
+            if ($this->_model->compareTokens($_POST['token'])) {
+                $notifs = isset($_POST['notifs']) === true ? 1 : 0;
+                if (isset($_POST['password'])) {
+                    if ($this->_model->isPwdSafe($_POST['password'])) {
+                        $this->_model->update($_POST['username'], $_POST['email'], $notifs, $_POST['password']);
+                    } else {
+                        $this->_model->setFlash('edit_err', "Votre mot de passe n'est pas suffisamment sécurisé!");
+                    }
+                } else {
+                    $this->_model->update($_POST['username'], $_POST['email'], $notifs);
+                }
+            }
+        }
+        $this->redirect("/account");
     }
 
     /**

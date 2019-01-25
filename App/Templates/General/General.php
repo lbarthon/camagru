@@ -10,11 +10,11 @@
 </head>
 <body>
     <div id="header">
-        <p>Header</p>
+        <a href="index">Accueil</a>
         <a href="account">Mon compte</a>
         <form action="/user/logout" method="post" onclick="return confirm('Voulez vous vous déconnecter?');">
             <input type="hidden" name="token" value="<?= $token ?>">
-            <input type="submit" name="logout" value="Logout">
+            <input type="submit" name="logout" value="Se déconnecter">
         </form>
     </div>
     <div id="center">
