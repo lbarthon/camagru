@@ -38,7 +38,7 @@ class SetupModel extends Model {
             email VARCHAR(255) NOT NULL,
             pwd VARCHAR(128) NOT NULL,
             notifs BIT DEFAULT 1,
-            conf_link VARCHAR(50),
+            conf_link VARCHAR(255),
             confirmed BIT DEFAULT 0
             )",
             "CREATE TABLE pictures (
@@ -48,7 +48,7 @@ class SetupModel extends Model {
             )",
             "CREATE TABLE resetpw (
             id_user INT(10) NOT NULL,
-            uniqueid VARCHAR(50) NOT NULL,
+            uniqueid VARCHAR(255) NOT NULL,
             `date` INT(30) NOT NULL
             )"
         ];

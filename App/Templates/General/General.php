@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="Css/General.css">
+    <link rel="stylesheet" href="/Css/General.css">
     <title>Camagru</title>
     <?= $js ?>
 </head>
@@ -24,17 +24,17 @@
         <div class="social-networks">
             <div class="social">
                 <a href="https://www.instagram.com/?hl=fr">
-                    <img src="Pictures/Instagram.png" alt="Instagram Logo">
+                    <img src="/Pictures/Instagram.png" alt="Instagram Logo">
                 </a>
             </div>
             <div class="social">
                 <a href="https://www.facebook.fr/">
-                    <img src="Pictures/Facebook.png" alt="Facebook Logo">
+                    <img src="/Pictures/Facebook.png" alt="Facebook Logo">
                 </a>
             </div>
             <div class="social">
                 <a href="https://www.twitter.com/">
-                    <img src="Pictures/Twitter.png" alt="Twitter Logo">
+                    <img src="/Pictures/Twitter.png" alt="Twitter Logo">
                 </a>
             </div>
         </div>

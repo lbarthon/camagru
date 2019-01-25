@@ -67,7 +67,7 @@ class UsersController extends Controller {
         if (isset($_POST) && !empty($_POST) && isset($_POST['edit']) && !empty($_POST['edit'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
                 $notifs = isset($_POST['notifs']) === true ? 1 : 0;
-                if (isset($_POST['password'])) {
+                if (isset($_POST['password']) && $_POST['password'] !== "") {
                     if ($this->_model->isPwdSafe($_POST['password'])) {
                         $this->_model->update($_POST['username'], $_POST['email'], $notifs, $_POST['password']);
                     } else {
@@ -104,17 +104,20 @@ class UsersController extends Controller {
     public function resetpw() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['confirm']) && !empty($_POST['confirm'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
-                if ($this->_model->resetPw($_POST['email'], $_POST['password'])) {
-                    $this->_model->removeUrl($this->_url);
-                    $this->_model->setFlash('popup', 'Mot de passe reset avec succès!');
-                    $this->redirect("/account");
+                if ($this->_model->isPwdSafe($_POST['password'])) {
+                    if ($this->_model->resetPw($_POST['email'], $_POST['password'])) {
+                        $this->_model->removeUrl($this->_url);
+                        $this->_model->setFlash('popup', 'Mot de passe reset avec succès!');
+                        $this->redirect("/account");
+                    } else {
+                        $this->_model->setFlash('popup', 'Erreur lors de la réinitialisation de votre mot de passe!');
+                    }
                 } else {
-                    $this->_model->setFlash('popup', 'Erreur lors de la réinitialisation de votre mot de passe!');
+                    $this->_model->setFlash('popup', "Votre mot de passe n'est pas suffisamment sécurisé!");
                 }
             }
         }
         $user_id = $this->_model->getUserIdFromUrl($this->_url);
-        die($user_id);
         if ($user_id === -2) {
             $this->_model->setFlash('popup', 'Votre lien a expiré!');
         } else if ($user_id !== -1) {

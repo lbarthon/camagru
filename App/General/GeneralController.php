@@ -31,9 +31,10 @@ class GeneralController extends Controller {
         if ($this->_model->isLogged()) {
             $username = $_SESSION['user'];
             $email = $this->_model->getMailFromSessionUsername();
+            $checked = $this->_model->getNotifsFromSessionUsername();
             $edit_success = "<p class='flash_success'>" . $this->_model->getFlash('edit_success') . "</p>";
             $edit_err = "<p class='flash_err'>" . $this->_model->getFlash('edit_err') . "</p>";
-            $this->render('General.Account', compact('username', 'email', 'edit_success'));
+            $this->render('General.Account', compact('username', 'email', 'edit_success', 'edit_err', 'checked'));
         }
         else {
             $this->login();

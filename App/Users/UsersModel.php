@@ -61,10 +61,14 @@ class UsersModel extends Model {
         $conf_link = bin2hex(random_bytes(50));
         $stmt = self::$_conn->prepare("INSERT INTO users (username, email, pwd, conf_link) VALUES (?,?,?,?)");
         $stmt->execute([$username, $email, $pwd, $conf_link]);
-    // Not working -- To fix
-        mail($email, "Confirm email", "HEY CONFIRM THIS MAIL");
-    // End of not working
-        $this->setFlash('create_success', "Compte créé avec succès!<br>Veuillez maintenant le confirmer grace au lien que vous avez reçu par mail!");
+        mail($email, "Confirmation du compte",
+            "Voici le lien pour Confirmer votre mot de passe :" .
+            "\nhttps://" . $_SERVER['HTTP_HOST'] . "/user/confirm/" . $conf_link .
+            "\n\nÀ bientôt sur Camagru!",
+            "From: camagru@barthonet.ovh\r\n");
+        $this->setFlash('create_success', "Compte créé avec succès!<br>" .
+            "Veuillez maintenant le confirmer grace au lien que vous avez reçu par mail!<br>" .
+            "Si vous n'avez rien reçu, regardez vos spams!");
         return true;
     }
 
@@ -112,7 +116,7 @@ class UsersModel extends Model {
             return -1;
         }
         try {
-            $stmt = self::$_conn->prepare("SELECT id_user FROM resetpw WHERE uniqueid = ?");
+            $stmt = self::$_conn->prepare("SELECT id_user,`date` FROM resetpw WHERE uniqueid = ?");
             $stmt->execute([$url]);
             $match = $stmt->fetch();
         } catch (PDOException $e) {
@@ -192,9 +196,11 @@ class UsersModel extends Model {
             } catch (PDOException $e) {
                 return false;
             }
-        // Not working -- To fix
-            mail($mail, "Reset pwd", "HEY RESET UR PWD", "From:camagru@lbarthon.fr");
-        // End of not working
+            mail($mail, "Réinitialisation du mot de passe",
+                "Voici le lien pour réinitialiser votre mot de passe :\n" .
+                "https://" . $_SERVER['HTTP_HOST'] . "/user/resetpw/" . $uniqueid .
+                "\n\nÀ bientôt sur Camagru!",
+                "From: camagru@barthonet.ovh\r\n");
             return true;
         }
         return false;
@@ -207,7 +213,7 @@ class UsersModel extends Model {
      */
     public function resetPw($email, $newpw) {
         $uid = $this->getFlash('reset_id');
-        $real_email = $this->getFlasg('reset_email');
+        $real_email = $this->getFlash('reset_email');
         $email = htmlspecialchars($email);
         if ($email !== $real_email) {
             return false;
@@ -218,8 +224,9 @@ class UsersModel extends Model {
             return false;
         }
         try {
+            $newpw = hash("whirlpool", $newpw);
             $stmt = self::$_conn->prepare("UPDATE users SET pwd=? WHERE id=?");
-            $stmt->execute([$newpw, $id]);
+            $stmt->execute([$newpw, $uid]);
         } catch (PDOException $e) {
             return false;
         }
@@ -262,7 +269,7 @@ class UsersModel extends Model {
      * If pwd isn't specified, won't be updated
      */
     public function update($username, $email, $notifs, $pwd = null) {
-        $old_username = $_SESSION['username'];
+        $old_username = $_SESSION['user'];
         try {
             $this->init();
         } catch (SqlException $e) {
@@ -277,6 +284,7 @@ class UsersModel extends Model {
                 $stmt = self::$_conn->prepare("UPDATE users SET username=?,email=?,notifs=? WHERE username=?");
                 $stmt->execute([$username, $email, $notifs, $old_username]);
             }
+            $_SESSION['user'] = $username;
         } catch (PDOException $e) {
             $this->setFlash('edit_err', 'Erreur lors de la mise à jour de votre profil.');
         }

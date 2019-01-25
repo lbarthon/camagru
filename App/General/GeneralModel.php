@@ -58,18 +58,18 @@ class GeneralModel extends Model {
         try {
             $this->init();
         } catch (SqlException $e) {
-            return -1;
+            return false;
         }
         try {
             $stmt = self::$_conn->prepare("SELECT notifs FROM users WHERE username=?");
             $stmt->execute([$username]);
             $match = $stmt->fetch();
         } catch (PDOException $e) {
-            return -1;
+            return false;
         }
         if (!isset($match) || empty($match)) {
-            return -1;
+            return false;
         }
-        return $match['notifs'];
+        return $match['notifs'] === '1' ? true : false;
     }
 }
