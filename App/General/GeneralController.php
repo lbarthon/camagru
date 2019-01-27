@@ -18,9 +18,29 @@ class GeneralController extends Controller {
 
     /**
      * Function that renders the index page.
+     * It calls the page function with the asked page
      */
     public function index() {
-        $this->render('General.Index');
+        $exploded = explode("/", $this->_url);
+        if (count($exploded) > 1) {
+            $this->page(intval($exploded[1]));
+        } else {
+            $this->page(0);
+        }
+    }
+
+    /**
+     * Function that renders the asked page.
+     */
+    public function page(int $page) {
+        $matches = $this->_model->getPageInfos($page);
+        if ($matches) {
+            $this->render("General.Page", compact('matches'));
+        } else if ($page === 0){
+            $this->render("General.Void");
+        } else {
+            $this->page(0);
+        }
     }
 
     /**

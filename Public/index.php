@@ -22,6 +22,7 @@ $router = new Router();
 
 $router->route("", "App\General\GeneralController@index");
 $router->route("index", "App\General\GeneralController@index");
+$router->route("page/(\d*)", "App\General\GeneralController@index");
 $router->route("account", "App\General\GeneralController@myAccount");
 
 $router->route("user/login", "App\Users\UsersController@login");

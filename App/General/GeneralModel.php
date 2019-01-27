@@ -72,4 +72,27 @@ class GeneralModel extends Model {
         }
         return $match['notifs'] === '1' ? true : false;
     }
+
+    /**
+     * Function that returns an array containing pictures of the asked page.
+     * $page is the asked page informations.
+     * 5 pictures per page.
+     */
+    public function getPageInfos(int $page) {
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return null;
+        }
+        try {
+            $stmt = self::$_conn->prepare(
+                "SELECT img, username, (SELECT COUNT(*) FROM likes WHERE likes.id_picture = pictures.id) AS likes FROM pictures INNER JOIN users ON pictures.id_user = users.id ORDER BY pictures.id DESC LIMIT " . $page * 5 . ",5"
+            );
+            $stmt->execute();
+            $matches = $stmt->fetchAll();
+            return $matches;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
 }
