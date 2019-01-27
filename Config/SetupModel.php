@@ -37,19 +37,35 @@ class SetupModel extends Model {
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             pwd VARCHAR(128) NOT NULL,
-            notifs BIT DEFAULT 1,
+            notifs BOOLEAN DEFAULT 1,
             conf_link VARCHAR(255),
             confirmed BIT DEFAULT 0
             )",
             "CREATE TABLE pictures (
             id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             img VARCHAR(255) NOT NULL,
-            id_user INT(10) NOT NULL
+            id_user INT(10) UNSIGNED NOT NULL,
+            FOREIGN KEY (id_user) REFERENCES users(id)
             )",
             "CREATE TABLE resetpw (
-            id_user INT(10) NOT NULL,
+            id_user INT(10) UNSIGNED NOT NULL,
+            FOREIGN KEY (id_user) REFERENCES users(id),
             uniqueid VARCHAR(255) NOT NULL,
             `date` INT(30) NOT NULL
+            )",
+            "CREATE TABLE comments (
+            id INT(15) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            id_picture INT(10) UNSIGNED NOT NULL,
+            id_user INT(10) UNSIGNED NOT NULL,
+            FOREIGN KEY (id_picture) REFERENCES pictures(id),
+            FOREIGN KEY (id_user) REFERENCES users(id),
+            comment TEXT NOT NULL
+            )",
+            "CREATE TABLE likes (
+            id_picture INT(10) UNSIGNED NOT NULL,
+            id_user INT(10) UNSIGNED NOT NULL,
+            FOREIGN KEY (id_picture) REFERENCES pictures(id),
+            FOREIGN KEY (id_user) REFERENCES users(id)
             )"
         ];
         foreach ($queries as $query) {

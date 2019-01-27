@@ -21,20 +21,25 @@ class UsersModel extends Model {
             $this->setFlash('login_err', "Erreur lors de la connection à la base de données. Veuillez contacter un administrateur.");
             return false;
         }
-        $stmt = self::$_conn->prepare("SELECT pwd,confirmed FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        $match = $stmt->fetch();
-        if (isset($match) && !empty($match)) {
-            if ($match['pwd'] === $pwd) {
-                if ($match['confirmed'] === '0') {
-                    $this->setFlash('login_err', "Votre compte n'a pas été confirmé!");
-                    return false;
+        try {
+            $stmt = self::$_conn->prepare("SELECT pwd,confirmed FROM users WHERE username = ?");
+            $stmt->execute([$username]);
+            $match = $stmt->fetch();
+            if (isset($match) && !empty($match)) {
+                if ($match['pwd'] === $pwd) {
+                    if ($match['confirmed'] === '0') {
+                        $this->setFlash('login_err', "Votre compte n'a pas été confirmé!");
+                        return false;
+                    }
+                    return true;
                 }
-                return true;
             }
+            $this->setFlash('login_err', "Nom d'utilisateur ou mot de passe incorrect!");
+            return false;
+        } catch (PDOException $e) {
+            $this->setFlash('create_err', "Erreur lors de la création de votre compte.");
+            return false;
         }
-        $this->setFlash('login_err', "Nom d'utilisateur ou mot de passe incorrect!");
-        return false;
     }
 
     /**
@@ -51,25 +56,30 @@ class UsersModel extends Model {
             $this->setFlash('create_err', "Erreur lors de la connection à la base de données. Veuillez contacter un administrateur.");
             return false;
         }
-        $stmt = self::$_conn->prepare("SELECT pwd FROM users WHERE username = ? OR email = ?");
-        $stmt->execute([$username, $email]);
-        $match = $stmt->fetch();
-        if (isset($match) && !empty($match)) {
-            $this->setFlash('create_err', "Mail ou nom d'utilisateur déjà utilisé!");
+        try {
+            $stmt = self::$_conn->prepare("SELECT pwd FROM users WHERE username = ? OR email = ?");
+            $stmt->execute([$username, $email]);
+            $match = $stmt->fetch();
+            if (isset($match) && !empty($match)) {
+                $this->setFlash('create_err', "Mail ou nom d'utilisateur déjà utilisé!");
+                return false;
+            }
+            $conf_link = bin2hex(random_bytes(50));
+            $stmt = self::$_conn->prepare("INSERT INTO users (username, email, pwd, conf_link) VALUES (?,?,?,?)");
+            $stmt->execute([$username, $email, $pwd, $conf_link]);
+            mail($email, "Confirmation du compte",
+                "Voici le lien pour Confirmer votre mot de passe :" .
+                "\nhttps://" . $_SERVER['HTTP_HOST'] . "/user/confirm/" . $conf_link .
+                "\n\nÀ bientôt sur Camagru!",
+                "From: camagru@barthonet.ovh\r\n");
+            $this->setFlash('create_success', "Compte créé avec succès!<br>" .
+                "Veuillez maintenant le confirmer grace au lien que vous avez reçu par mail!<br>" .
+                "Si vous n'avez rien reçu, regardez vos spams!");
+            return true;
+        } catch (PDOException $e) {
+            $this->setFlash('create_err', "Erreur lors de la création de votre compte.");
             return false;
         }
-        $conf_link = bin2hex(random_bytes(50));
-        $stmt = self::$_conn->prepare("INSERT INTO users (username, email, pwd, conf_link) VALUES (?,?,?,?)");
-        $stmt->execute([$username, $email, $pwd, $conf_link]);
-        mail($email, "Confirmation du compte",
-            "Voici le lien pour Confirmer votre mot de passe :" .
-            "\nhttps://" . $_SERVER['HTTP_HOST'] . "/user/confirm/" . $conf_link .
-            "\n\nÀ bientôt sur Camagru!",
-            "From: camagru@barthonet.ovh\r\n");
-        $this->setFlash('create_success', "Compte créé avec succès!<br>" .
-            "Veuillez maintenant le confirmer grace au lien que vous avez reçu par mail!<br>" .
-            "Si vous n'avez rien reçu, regardez vos spams!");
-        return true;
     }
 
     /**
@@ -266,16 +276,45 @@ class UsersModel extends Model {
 
     /**
      * Function that update members informations.
-     * If pwd isn't specified, won't be updated
+     * Also checks if username or mail is used by an other user.
+     * If pwd isn't specified, won't be updated.
      */
     public function update($username, $email, $notifs, $pwd = null) {
         $old_username = $_SESSION['user'];
-        // TODO -- Check if username or mail not being used
-        // TODO -- Notifs update (rn won't)
+        // TODO -- Notifs update
         try {
             $this->init();
         } catch (SqlException $e) {
             $this->setFlash('edit_err', 'Erreur lors de la mise à jour de votre profil.');
+            return;
+        }
+        try {
+            // TODO -- Test & debug
+            $stmt = self::$_conn->prepare("SELECT id FROM users WHERE username=?");
+            $stmt->execute([$old_username]);
+            $match = $stmt->fetch();
+            $user_id = $match['id'];
+
+            $stmt = self::$_conn->prepare("SELECT id FROM users WHERE username=?");
+            $stmt->execute([$username]);
+            while ($match = $stmt->fetch()) {
+                if ($match['id'] !== $user_id) {
+                    $this->setFlash('edit_err', "Ce nom d'utilisateur est déjà utilisé!");
+                    return;
+                }
+            }
+
+            $stmt = self::$_conn->prepare("SELECT id FROM users WHERE email=?");
+            $stmt->execute([$email]);
+            while ($match = $stmt->fetch()) {
+                if ($match['id'] !== $user_id) {
+                    $this->setFlash('edit_err', "Cet email est déjà utilisé!");
+                    return;
+                }
+            }
+        } catch (PDOException $e) {
+            $this->setFlash('edit_err', 'Erreur lors de la mise à jour de votre profil.');
+            return;
         }
         try {
             if ($pwd !== null) {
@@ -287,9 +326,9 @@ class UsersModel extends Model {
                 $stmt->execute([$username, $email, $notifs, $old_username]);
             }
             $_SESSION['user'] = $username;
+            $this->setFlash('edit_success', 'Profil mis à jour avec succès!');
         } catch (PDOException $e) {
             $this->setFlash('edit_err', 'Erreur lors de la mise à jour de votre profil.');
         }
-        $this->setFlash('edit_success', 'Profil mis à jour avec succès!');
     }
 }
