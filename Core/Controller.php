@@ -43,11 +43,12 @@ abstract class Controller {
         extract($values);
         require $this->_viewPath . str_replace('.', '/', $file) . '.php';
         $content = ob_get_clean();
-        $js = null;
+        $_logged = isset($_SESSION['user']) ? true : false;
+        if (!isset($js)) $js = null;
         if (isset($this->_model) && $this->_model !== null) {
             $var = $this->_model->getFlash('popup');
             if (isset($var) && !empty($var) && $var !== null && $var !== "") {
-                $js = '<script>window.onload = function() {alert("' . $var . '");};</script>';
+                $js .= '<script>window.onload = function() {alert("' . $var . '");};</script>';
             }
         }
         require $this->_templatePath . str_replace('.', '/', $this->_template) . '.php';

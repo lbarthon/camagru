@@ -30,6 +30,35 @@ class GeneralController extends Controller {
     }
 
     /**
+     * Function that prints the page tha tallows the user to post a picture.
+     */
+    public function add() {
+        if ($this->_model->islogged()) {
+            $add_success = "<p class='flash_success'>" . $this->_model->getFlash('add_success') . "</p>";;
+            $add_error = "<p class='flash_err'>" . $this->_model->getFlash('add_error') . "</p>";
+            $this->render("General.Add", compact('add_success', 'add_error'));
+        } else {
+            $this->redirect("/account");
+        }
+    }
+
+    /**
+     * Fucntion that's called in post when the user posts the picture.
+     */
+    public function add_pic() {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['add_pic']) && !empty($_POST['add_pic'])) {
+            if ($this->_model->compareTokens($_POST['token'])) {
+                if ($this->_model->addPicture($_POST['picture'])) {
+                    $this->_model->setFlash("add_success", "Photo ajoutée avec succès!");
+                    $this->redirect("/add");
+                }
+            }
+        }
+        $this->_model->setFlash("add_error", "Erreur lors de l'ajout de votre photo!");
+        $this->redirect("/add");
+    }
+
+    /**
      * Function that renders the asked page.
      */
     public function page(int $page) {
@@ -69,5 +98,31 @@ class GeneralController extends Controller {
         $create_err = "<p class='flash_err'>" . $this->_model->getFlash('create_err') . "</p>";
         $create_success = "<p class='flash_success'>" . $this->_model->getFlash('create_success') . "</p>";
         $this->render('General.Login', compact('login_err', 'create_err', 'create_success'));
+    }
+
+    /**
+     * Like page, must be called with ajax.
+     */
+    public function like() {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['like']) && !empty($_POST['like'])) {
+            if ($this->_model->compareTokens($_POST['token'])) {
+                if (!$this->_model->like(explode("/", $this->_url)[1])) {
+                    echo "error";
+                }
+            }
+        }
+    }
+
+    /**
+     * Dislike page, must be called with ajax.
+     */
+    public function dislike() {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['dislike']) && !empty($_POST['dislike'])) {
+            if ($this->_model->compareTokens($_POST['token'])) {
+                if (!$this->_model->dislike(explode("/", $this->_url)[1])) {
+                    echo "error";
+                }
+            }
+        }
     }
 }

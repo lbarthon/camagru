@@ -48,6 +48,32 @@ class GeneralModel extends Model {
     }
 
     /**
+     * Returns the user id from the session var 'user'
+     */
+    public function getUserIdFromSessionUsername() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $username = $_SESSION['user'];
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return false;
+        }
+        try {
+            $stmt = self::$_conn->prepare("SELECT id FROM users WHERE username=?");
+            $stmt->execute([$username]);
+            $match = $stmt->fetch();
+        } catch (PDOException $e) {
+            return false;
+        }
+        if (!isset($match) || empty($match)) {
+            return false;
+        }
+        return $match['id'];
+    }
+
+    /**
      * Returns 0 or 1 if user has mail notifications enabled, -1 otherwise.
      */
     public function getNotifsFromSessionUsername() {
@@ -86,7 +112,8 @@ class GeneralModel extends Model {
         }
         try {
             $stmt = self::$_conn->prepare(
-                "SELECT img, username, (SELECT COUNT(*) FROM likes WHERE likes.id_picture = pictures.id) AS likes FROM pictures INNER JOIN users ON pictures.id_user = users.id ORDER BY pictures.id DESC LIMIT " . $page * 5 . ",5"
+                "SELECT pictures.id, img, username, (SELECT COUNT(*) FROM likes WHERE likes.id_picture = pictures.id) AS likes FROM pictures" .
+                " INNER JOIN users ON pictures.id_user = users.id ORDER BY pictures.id DESC LIMIT " . $page * 5 . ",5"
             );
             $stmt->execute();
             $matches = $stmt->fetchAll();
@@ -94,5 +121,79 @@ class GeneralModel extends Model {
         } catch (PDOException $e) {
             return null;
         }
+    }
+
+    /**
+     * Function called to add a picture to camagru.
+     * Returns true if success, false otherwise.
+     */
+    public function addPicture($picture) {
+        $picture = substr($picture, 22);
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return false;
+        }
+        $path = "/Pictures/Users/" . bin2hex(random_bytes(50)) . ".png";
+        file_put_contents("./Public" . $path, base64_decode($picture));
+        $user_id = $this->getUserIdFromSessionUsername();
+        if (!$user_id) {
+            return false;
+        }
+        try {
+            $stmt = self::$_conn->prepare("INSERT INTO pictures (img, id_user) VALUES (?, ?)");
+            $stmt->execute(["." . $path, $user_id]);
+        } catch (PDOException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Like function.
+     * Likes the picture as the session user if he hasn't already liked.
+     */
+    public function like($picture_id) {
+        if (!$this->isLogged()) return false;
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return false;
+        }
+        try {
+            $user_id = $this->getUserIdFromSessionUsername();
+            $stmt = self::$_conn->prepare("SELECT * FROM likes WHERE id_user=? AND id_picture=?");
+            $stmt->execute([$user_id, $picture_id]);
+            if ($stmt->rowCount() > 0) return false;
+            $stmt = self::$_conn->prepare("INSERT INTO likes (id_user, id_picture) VALUES (?,?)");
+            $stmt->execute([$user_id, $picture_id]);
+        } catch (PDOException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Dislike function.
+     * Dislikes the picture as the session user if he has liked it.
+     */
+    public function dislike($picture_id) {
+        if (!$this->isLogged()) return false;
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return false;
+        }
+        try {
+            $user_id = $this->getUserIdFromSessionUsername();
+            $stmt = self::$_conn->prepare("SELECT * FROM likes WHERE id_user=?");
+            $stmt->execute([$user_id]);
+            if ($stmt->rowCount() === 0) return false;
+            $stmt = self::$_conn->prepare("DELETE FROM likes WHERE id_user=? AND id_picture=?");
+            $stmt->execute([$user_id, $picture_id]);
+        } catch (PDOException $e) {
+            return false;
+        }
+        return true;
     }
 }

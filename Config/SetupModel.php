@@ -43,7 +43,7 @@ class SetupModel extends Model {
             )",
             "CREATE TABLE pictures (
             id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            img VARCHAR(255) NOT NULL,
+            img TEXT NOT NULL,
             id_user INT(10) UNSIGNED NOT NULL,
             FOREIGN KEY (id_user) REFERENCES users(id)
             )",
