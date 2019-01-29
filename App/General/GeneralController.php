@@ -32,11 +32,9 @@ class GeneralController extends Controller {
     /**
      * Function that prints the page tha tallows the user to post a picture.
      */
-    public function add() {
+    public function montage() {
         if ($this->_model->islogged()) {
-            $add_success = "<p class='flash_success'>" . $this->_model->getFlash('add_success') . "</p>";;
-            $add_error = "<p class='flash_err'>" . $this->_model->getFlash('add_error') . "</p>";
-            $this->render("General.Add", compact('add_success', 'add_error'));
+            $this->render("General.Montage");
         } else {
             $this->redirect("/account");
         }

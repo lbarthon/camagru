@@ -25,7 +25,7 @@ $router->route("", "App\General\GeneralController@index");
 $router->route("index", "App\General\GeneralController@index");
 $router->route("page/(\d*)", "App\General\GeneralController@index");
 $router->route("account", "App\General\GeneralController@myAccount");
-$router->route("add", "App\General\GeneralController@add");
+$router->route("montage", "App\General\GeneralController@montage");
 $router->route("add_pic", "App\General\GeneralController@add_pic");
 $router->route("like/(\d*)", "App\General\GeneralController@like");
 $router->route("dislike/(\d*)", "App\General\GeneralController@dislike");

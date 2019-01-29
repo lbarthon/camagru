@@ -12,9 +12,9 @@
     <div id="header">
         <a href="index">Accueil</a>
         <a href="account">Mon compte</a>
-        <a href="add">Ajouter une photo</a>
+        <a href="montage">Montage</a>
         <?php if ($_logged) { ?>
-        <form action="/user/logout" method="post" onclick="return confirm('Voulez vous vous déconnecter?');">
+        <form action="/user/logout" method="post">
             <input type="hidden" name="token" value="<?= $token ?>">
             <input type="submit" name="logout" value="Se déconnecter">
         </form>

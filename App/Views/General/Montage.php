@@ -7,8 +7,6 @@
     <input type="hidden" name="token" value="<?= $token ?>">
     <input type="submit" name="add_pic" value="Poster ma photo">
 </form>
-<?= $add_success ?>
-<?= $add_error ?>
 
 <script>
     var canvas = document.getElementById('canvas');
