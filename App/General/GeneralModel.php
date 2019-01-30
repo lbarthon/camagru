@@ -123,6 +123,22 @@ class GeneralModel extends Model {
         }
     }
 
+    public function getNbrPictures() {
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return -1;
+        }
+        try {
+            $stmt = self::$_conn->prepare("SELECT id FROM pictures");
+            $stmt->execute();
+            $nbr = $stmt->rowCount();
+        } catch (PDOException $e) {
+            return -1;
+        }
+        return $nbr;
+    }
+
     /**
      * Function called to add a picture to camagru.
      * Returns true if success, false otherwise.
@@ -191,6 +207,26 @@ class GeneralModel extends Model {
             if ($stmt->rowCount() === 0) return false;
             $stmt = self::$_conn->prepare("DELETE FROM likes WHERE id_user=? AND id_picture=?");
             $stmt->execute([$user_id, $picture_id]);
+        } catch (PDOException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Function that adds a comment!
+     */
+    public function comment($picture_id, $comment) {
+        if (!$this->isLogged() || $comment === null) return false;
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return false;
+        }
+        try {
+            $user_id = $this->getUserIdFromSessionUsername();
+            $stmt = self::$_conn->prepare("INSERT INTO comments (id_user, id_picture, comment) VALUES (?,?,?)");
+            $stmt->execute([$user_id, $picture_id, $comment]);
         } catch (PDOException $e) {
             return false;
         }

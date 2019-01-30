@@ -2,7 +2,7 @@
     <input type="text" name="username" placeholder="Nom d'utilisateur" required>
     <input type="password" name="password" placeholder="Mot de passe" required>
     <input type="hidden" name="token" value="<?= $token ?>">
-    <input type="submit" name="login" value="Se conneceter">
+    <input type="submit" name="login" value="Se connecter">
 </form>
 <?= $login_err ?>
 

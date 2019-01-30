@@ -9,7 +9,7 @@
     <?= $js ?>
 </head>
 <body>
-    <div id="header">
+    <header>
         <a href="index">Accueil</a>
         <a href="account">Mon compte</a>
         <a href="montage">Montage</a>
@@ -19,7 +19,7 @@
             <input type="submit" name="logout" value="Se déconnecter">
         </form>
         <?php } ?>
-    </div>
+    </header>
     <div id="center">
         <?= $content ?>
     </div>

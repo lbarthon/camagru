@@ -6,6 +6,9 @@
  */
 
 chdir('..');
+/**
+ * Loading autoloader :)
+ */
 require 'Core/Autoloader.php';
 Autoloader::register();
 
@@ -13,23 +16,46 @@ use App\General\GeneralController;
 use Core\Router;
 
 $url = $_GET['path'];
+/**
+ * Setup variable, that add setup mvc to all the routes.
+ * Set to true to disable setup page access.
+ */
 $setup = false;
-
 /**
  * Router instanced and all routes added here.
  */
-
 $router = new Router();
-
+/**
+ * Those 2 pages print index, equivalent to page/0
+ */
 $router->route("", "App\General\GeneralController@index");
 $router->route("index", "App\General\GeneralController@index");
+/**
+ * Prints the asked page
+ */
 $router->route("page/(\d*)", "App\General\GeneralController@index");
+/**
+ * Account page :)
+ */
 $router->route("account", "App\General\GeneralController@myAccount");
+/**
+ * Montage page, where the user can see all the pictures he took.
+ * He'll be able to delete them here.
+ */
 $router->route("montage", "App\General\GeneralController@montage");
+/**
+ * Post form to add a picture.
+ */
 $router->route("add_pic", "App\General\GeneralController@add_pic");
+/**
+ * Post forms that are called using ajax.
+ */
 $router->route("like/(\d*)", "App\General\GeneralController@like");
 $router->route("dislike/(\d*)", "App\General\GeneralController@dislike");
-
+$router->route("comment/(\d*)", "App\General\GeneralController@comment");
+/**
+ * User management forms, except resetpw.
+ */
 $router->route("user/login", "App\Users\UsersController@login");
 $router->route("user/create", "App\Users\UsersController@create");
 $router->route("user/edit", "App\Users\UsersController@edit");
@@ -45,5 +71,4 @@ if (!$setup) {
  * Router executed -> Prints the page to the user.
  * If false is returned, 404 error page is printed.
  */
-
 $router->execute($url);

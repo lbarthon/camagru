@@ -48,12 +48,12 @@ class GeneralController extends Controller {
             if ($this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->addPicture($_POST['picture'])) {
                     $this->_model->setFlash("add_success", "Photo ajoutée avec succès!");
-                    $this->redirect("/add");
+                    $this->redirect("/montage");
                 }
             }
         }
         $this->_model->setFlash("add_error", "Erreur lors de l'ajout de votre photo!");
-        $this->redirect("/add");
+        $this->redirect("/montage");
     }
 
     /**
@@ -62,7 +62,16 @@ class GeneralController extends Controller {
     public function page(int $page) {
         $matches = $this->_model->getPageInfos($page);
         if ($matches) {
-            $this->render("General.Page", compact('matches'));
+            $total = $this->_model->getNbrPictures();
+            if ($total === -1) {
+                $prevpage = false;
+                $nextpage = false;
+                $this->render("General.Page", compact('matches', 'nextpage', 'prevpage'));
+            } else {
+                $prevpage = $page !== 0;
+                $nextpage = ($page + 1) * 5 < $total;
+                $this->render("General.Page", compact('matches', 'nextpage', 'prevpage', 'page'));
+            }
         } else if ($page === 0){
             $this->render("General.Void");
         } else {
@@ -118,6 +127,19 @@ class GeneralController extends Controller {
         if (isset($_POST) && !empty($_POST) && isset($_POST['dislike']) && !empty($_POST['dislike'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
                 if (!$this->_model->dislike(explode("/", $this->_url)[1])) {
+                    echo "error";
+                }
+            }
+        }
+    }
+
+    /**
+     * 
+     */
+    public function comment() {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['comment']) && !empty($_POST['comment'])) {
+            if ($this->_model->compareTokens($_POST['token'])) {
+                if (!$this->_model->comment(explode("/", $this->_url)[1], $_POST['comment'])) {
                     echo "error";
                 }
             }
