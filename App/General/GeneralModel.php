@@ -112,8 +112,8 @@ class GeneralModel extends Model {
         }
         try {
             $stmt = self::$_conn->prepare(
-                "SELECT pictures.id, img, username, (SELECT COUNT(*) FROM likes WHERE likes.id_picture = pictures.id) AS likes FROM pictures" .
-                " INNER JOIN users ON pictures.id_user = users.id ORDER BY pictures.id DESC LIMIT " . $page * 5 . ",5"
+                "SELECT pictures.id, img, username, (SELECT COUNT(*) FROM likes WHERE likes.id_picture = pictures.id) AS likes " .
+                "FROM pictures INNER JOIN users ON pictures.id_user = users.id ORDER BY pictures.id DESC LIMIT " . $page * 5 . ",5"
             );
             $stmt->execute();
             $matches = $stmt->fetchAll();
@@ -217,7 +217,7 @@ class GeneralModel extends Model {
      * Function that adds a comment!
      */
     public function comment($picture_id, $comment) {
-        if (!$this->isLogged() || $comment === null) return false;
+        if (!$this->isLogged()) return false;
         try {
             $this->init();
         } catch (SqlException $e) {

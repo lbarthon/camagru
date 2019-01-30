@@ -108,7 +108,7 @@ class GeneralController extends Controller {
     }
 
     /**
-     * Like page, must be called with ajax.
+     * Like page, must be called using ajax.
      */
     public function like() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['like']) && !empty($_POST['like'])) {
@@ -121,7 +121,7 @@ class GeneralController extends Controller {
     }
 
     /**
-     * Dislike page, must be called with ajax.
+     * Dislike page, must be called using ajax.
      */
     public function dislike() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['dislike']) && !empty($_POST['dislike'])) {
@@ -134,7 +134,7 @@ class GeneralController extends Controller {
     }
 
     /**
-     * 
+     * Comment page, must be called using ajax.
      */
     public function comment() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['comment']) && !empty($_POST['comment'])) {

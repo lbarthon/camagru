@@ -14,10 +14,10 @@
         <input type="hidden" name="token" value="<?= $token ?>">
         <input type="submit" name="dislike" value="Disike">
     </form>
-    <form class="comment" action="comment/<?= $picture['id'] ?>" method="post">
-        <textarea name="comment" cols="30" rows="10"></textarea>
+    <form id="comment" class="comment" action="comment/<?= $picture['id'] ?>" method="post">
+        <input type="text" name="comment" placeholder="Votre commentaire...">
         <input type="hidden" name="token" value="<?= $token ?>">
-        <input type="submit" name="comment" value="Comment">
+        <input type="submit" name="submit" value="Comment">
     </form>
 </div>
 <?php
