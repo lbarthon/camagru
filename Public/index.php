@@ -29,9 +29,10 @@ $router = new Router();
 $router->route("", "App\General\GeneralController@index");
 $router->route("index", "App\General\GeneralController@index");
 /**
- * Prints the asked page
+ * Prints the asked page or picture.
  */
 $router->route("page/(\d*)", "App\General\GeneralController@index");
+$router->route("picture/(\d*)", "App\General\GeneralController@picture");
 /**
  * Account page :)
  */

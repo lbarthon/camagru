@@ -10,8 +10,18 @@ body, html {
 }
 
 header {
+    display: flex;
     height: 10%;
+    padding: 10px 0;
+    flex-flow: row wrap;
     background-color: #9295a0;
+    justify-content: space-around;
+    align-content: center;
+}
+
+header > a {
+    text-decoration: none;
+    color: black;
 }
 
 #center {
@@ -36,7 +46,7 @@ footer {
 
 footer > h3 {
     position: absolute;
-    font-size: 1.5vw;
+    font-size: calc(10px + 0.7vw);
     bottom: 2px;
     right: 2px;
 }

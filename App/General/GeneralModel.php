@@ -117,7 +117,40 @@ class GeneralModel extends Model {
             );
             $stmt->execute();
             $matches = $stmt->fetchAll();
+            for ($i = 0; $i < count($matches); $i++) {
+                $stmt = self::$_conn->prepare("SELECT comment, username FROM comments INNER JOIN users ON comments.id_user = users.id WHERE id_picture=?");
+                $stmt->execute([$matches[$i]['id']]);
+                $matches[$i]['comments'] = $stmt->fetchAll();
+            }
             return $matches;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns informations about asked picture.
+     */
+    public function getPicture($picture_id) {
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return null;
+        }
+        try {
+            $stmt = self::$_conn->prepare(
+                "SELECT pictures.id, img, username, (SELECT COUNT(*) FROM likes WHERE likes.id_picture = pictures.id) AS likes " .
+                "FROM pictures INNER JOIN users ON pictures.id_user = users.id WHERE pictures.id=?"
+            );
+            $stmt->execute([$picture_id]);
+            $match = $stmt->fetch();
+            if ($match) {
+                $stmt = self::$_conn->prepare("SELECT comment, username FROM comments INNER JOIN users ON comments.id_user = users.id WHERE id_picture=?");
+                $stmt->execute([$picture_id]);
+                $match['comments'] = $stmt->fetchAll();
+                return $match;
+            }
+            return null;
         } catch (PDOException $e) {
             return null;
         }
@@ -134,7 +167,7 @@ class GeneralModel extends Model {
             return null;
         }
         try {
-            $stmt = self::$_conn->prepare("SELECT id, img FROM pictures WHERE id_user=? ORDER BY pictures.id ASC");
+            $stmt = self::$_conn->prepare("SELECT id, img FROM pictures WHERE id_user=? ORDER BY pictures.id DESC");
             $stmt->execute([$this->getUserIdFromSessionUsername()]);
             $matches = $stmt->fetchAll();
             return $matches;

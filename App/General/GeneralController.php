@@ -58,6 +58,17 @@ class GeneralController extends Controller {
     }
 
     /**
+     * Function that renders one picture.
+     */
+    public function picture() {
+        $picture = $this->_model->getPicture(explode("/", $this->_url)[1]);
+        if ($picture === null) {
+            $this->redirect("/index");
+        }
+        $this->render("General.Picture", compact('picture'));
+    }
+
+    /**
      * Function that renders the asked page.
      */
     public function page(int $page) {

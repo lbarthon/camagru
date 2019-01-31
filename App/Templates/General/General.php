@@ -14,7 +14,7 @@
         <a href="/account">Mon compte</a>
         <a href="/montage">Montage</a>
         <?php if ($_logged) { ?>
-        <form action="/user/logout" method="post">
+        <form id="logout" action="/user/logout" method="post">
             <input type="hidden" name="token" value="<?= $token ?>">
             <input type="submit" name="logout" value="Se déconnecter">
         </form>
