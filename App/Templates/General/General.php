@@ -10,9 +10,9 @@
 </head>
 <body>
     <header>
-        <a href="index">Accueil</a>
-        <a href="account">Mon compte</a>
-        <a href="montage">Montage</a>
+        <a href="/index">Accueil</a>
+        <a href="/account">Mon compte</a>
+        <a href="/montage">Montage</a>
         <?php if ($_logged) { ?>
         <form action="/user/logout" method="post">
             <input type="hidden" name="token" value="<?= $token ?>">

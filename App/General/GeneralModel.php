@@ -123,6 +123,29 @@ class GeneralModel extends Model {
         }
     }
 
+    /**
+     * Returns an array of all the pictures taken by the session user.
+     * Array also contains pictures id.
+     */
+    public function getSessionUserPictures() {
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return null;
+        }
+        try {
+            $stmt = self::$_conn->prepare("SELECT id, img FROM pictures WHERE id_user=? ORDER BY pictures.id ASC");
+            $stmt->execute([$this->getUserIdFromSessionUsername()]);
+            $matches = $stmt->fetchAll();
+            return $matches;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the total number of pictures.
+     */
     public function getNbrPictures() {
         try {
             $this->init();
@@ -158,7 +181,7 @@ class GeneralModel extends Model {
         }
         try {
             $stmt = self::$_conn->prepare("INSERT INTO pictures (img, id_user) VALUES (?, ?)");
-            $stmt->execute(["." . $path, $user_id]);
+            $stmt->execute([$path, $user_id]);
         } catch (PDOException $e) {
             return false;
         }
@@ -166,7 +189,37 @@ class GeneralModel extends Model {
     }
 
     /**
-     * Like function.
+     * Deletes the picture asked if belongs to the session user.
+     */
+    public function delete($picture_id) {
+        if (!$this->isLogged()) return false;
+        try {
+            $this->init();
+        } catch (SqlException $e) {
+            return false;
+        }
+        try {
+            $user_id = $this->getUserIdFromSessionUsername();
+            $stmt = self::$_conn->prepare("SELECT img FROM pictures WHERE id=? AND id_user=?");
+            $stmt->execute([$picture_id, $user_id]);
+            $match = $stmt->fetch();
+            if ($stmt->rowCount() == 1) {
+                $stmt = self::$_conn->prepare("DELETE FROM likes WHERE id_picture=?");
+                $stmt->execute([$picture_id]);
+                $stmt = self::$_conn->prepare("DELETE FROM comments WHERE id_picture=?");
+                $stmt->execute([$picture_id]);
+                $stmt = self::$_conn->prepare("DELETE FROM pictures WHERE id=? AND id_user=?");
+                $stmt->execute([$picture_id, $user_id]);
+                unlink("./Public" . $match['img']);
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
      * Likes the picture as the session user if he hasn't already liked.
      */
     public function like($picture_id) {
@@ -180,7 +233,7 @@ class GeneralModel extends Model {
             $user_id = $this->getUserIdFromSessionUsername();
             $stmt = self::$_conn->prepare("SELECT * FROM likes WHERE id_user=? AND id_picture=?");
             $stmt->execute([$user_id, $picture_id]);
-            if ($stmt->rowCount() > 0) return false;
+            if ($stmt->rowCount() > 0) return true;
             $stmt = self::$_conn->prepare("INSERT INTO likes (id_user, id_picture) VALUES (?,?)");
             $stmt->execute([$user_id, $picture_id]);
         } catch (PDOException $e) {
@@ -190,8 +243,7 @@ class GeneralModel extends Model {
     }
 
     /**
-     * Dislike function.
-     * Dislikes the picture as the session user if he has liked it.
+     * Unlikes the picture as the session user if he has liked it.
      */
     public function dislike($picture_id) {
         if (!$this->isLogged()) return false;
@@ -204,7 +256,7 @@ class GeneralModel extends Model {
             $user_id = $this->getUserIdFromSessionUsername();
             $stmt = self::$_conn->prepare("SELECT * FROM likes WHERE id_user=?");
             $stmt->execute([$user_id]);
-            if ($stmt->rowCount() === 0) return false;
+            if ($stmt->rowCount() === 0) return true;
             $stmt = self::$_conn->prepare("DELETE FROM likes WHERE id_user=? AND id_picture=?");
             $stmt->execute([$user_id, $picture_id]);
         } catch (PDOException $e) {
@@ -217,6 +269,7 @@ class GeneralModel extends Model {
      * Function that adds a comment!
      */
     public function comment($picture_id, $comment) {
+        $comment = htmlspecialchars($comment);
         if (!$this->isLogged()) return false;
         try {
             $this->init();
@@ -227,6 +280,16 @@ class GeneralModel extends Model {
             $user_id = $this->getUserIdFromSessionUsername();
             $stmt = self::$_conn->prepare("INSERT INTO comments (id_user, id_picture, comment) VALUES (?,?,?)");
             $stmt->execute([$user_id, $picture_id, $comment]);
+            $stmt = self::$_conn->prepare("SELECT notifs,email FROM pictures INNER JOIN users ON users.id = pictures.id_user WHERE pictures.id=?");
+            $stmt->execute([$picture_id]);
+            $match = $stmt->fetch();
+            if ($match['notifs']) {
+                mail($match['email'], "Commentaire sur votre photo!",
+                    "Votre photo a été commentée par " . $_SESSION['user'] . "!\n" .
+                    "\"" . $comment . "\"\n" .
+                    "À bientôt sur Camagru!",
+                    "From: camagru@barthonet.ovh\r\n");
+            }
         } catch (PDOException $e) {
             return false;
         }

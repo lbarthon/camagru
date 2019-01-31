@@ -1,10 +1,8 @@
 <?php
-
 /**
  * Index that handles all requests.
  * The chdir allow to include everything from the project path.
  */
-
 chdir('..');
 /**
  * Loading autoloader :)
@@ -44,9 +42,10 @@ $router->route("account", "App\General\GeneralController@myAccount");
  */
 $router->route("montage", "App\General\GeneralController@montage");
 /**
- * Post form to add a picture.
+ * Post forms to add or delete a picture.
  */
 $router->route("add_pic", "App\General\GeneralController@add_pic");
+$router->route("delete/(\d*)", "App\General\GeneralController@delete");
 /**
  * Post forms that are called using ajax.
  */

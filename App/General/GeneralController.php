@@ -34,7 +34,8 @@ class GeneralController extends Controller {
      */
     public function montage() {
         if ($this->_model->islogged()) {
-            $this->render("General.Montage");
+            $matches = $this->_model->getSessionUserPictures();
+            $this->render("General.Montage", compact('matches'));
         } else {
             $this->redirect("/account");
         }
@@ -105,6 +106,20 @@ class GeneralController extends Controller {
         $create_err = "<p class='flash_err'>" . $this->_model->getFlash('create_err') . "</p>";
         $create_success = "<p class='flash_success'>" . $this->_model->getFlash('create_success') . "</p>";
         $this->render('General.Login', compact('login_err', 'create_err', 'create_success'));
+    }
+
+    /**
+     * Deletes the picture in the url.
+     * Method called in post.
+     */
+    public function delete() {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['delete']) && !empty($_POST['delete'])) {
+            if ($this->_model->compareTokens($_POST['token'])) {
+                if (!$this->_model->delete(explode("/", $this->_url)[1])) {
+                    echo "error";
+                }
+            }
+        }
     }
 
     /**

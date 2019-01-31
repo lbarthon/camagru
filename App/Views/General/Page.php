@@ -1,20 +1,19 @@
 <?php
-    // TODO -- Display comments
     foreach ($matches as $picture) {
 ?>
 <div class="picture">
     <h3><?= $picture['username'] ?></h3>
     <img src="<?= $picture['img'] ?>">
     <p class="likes"><?= $picture['likes'] ?> likes</p>
-    <form class="like" action="like/<?= $picture['id'] ?>" method="post">
+    <form class="like" action="/like/<?= $picture['id'] ?>" method="post">
         <input type="hidden" name="token" value="<?= $token ?>">
         <input type="submit" name="like" value="Like">
     </form>
-    <form class="like" action="dislike/<?= $picture['id'] ?>" method="post">
+    <form class="like" action="/dislike/<?= $picture['id'] ?>" method="post">
         <input type="hidden" name="token" value="<?= $token ?>">
-        <input type="submit" name="dislike" value="Disike">
+        <input type="submit" name="dislike" value="Unlike">
     </form>
-    <form id="comment" class="comment" action="comment/<?= $picture['id'] ?>" method="post">
+    <form id="comment" class="comment" action="/comment/<?= $picture['id'] ?>" method="post">
         <input type="text" name="comment" placeholder="Votre commentaire...">
         <input type="hidden" name="token" value="<?= $token ?>">
         <input type="submit" name="submit" value="Comment">
@@ -23,11 +22,11 @@
 <?php
     } if ($prevpage) {
 ?>
-<a href="page/<?= $page - 1 ?>">Page précédente</a>
+<a href="/page/<?= $page - 1 ?>">Page précédente</a>
 <?php
     } if ($nextpage) {
 ?>
-<a href="page/<?= $page + 1 ?>">Page suivante</a>
+<a href="/page/<?= $page + 1 ?>">Page suivante</a>
 <?php 
     }
 ?>
