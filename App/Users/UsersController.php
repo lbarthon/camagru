@@ -71,7 +71,8 @@ class UsersController extends Controller {
                     if ($this->_model->isPwdSafe($_POST['password'])) {
                         $this->_model->update($_POST['username'], $_POST['email'], $notifs, $_POST['password']);
                     } else {
-                        $this->_model->setFlash('edit_err', "Votre mot de passe n'est pas suffisamment sécurisé!");
+                        $this->_model->setFlash('edit_err', "Votre mot de passe n'est pas suffisamment sécurisé!<br>" .
+                            "Veuillez mettre au moins : 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.");
                     }
                 } else {
                     $this->_model->update($_POST['username'], $_POST['email'], $notifs);

@@ -1,5 +1,0 @@
-<?php
-
-    // TODO -- PROFILE PAGE THAT PRINTS USER PICTURES
-
-?>

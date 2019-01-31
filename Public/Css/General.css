@@ -136,3 +136,45 @@ footer > .social-networks > div.social > a > img {
 }
 
 /* Montage part */
+#montage_parent {
+    display: flex;
+    width: 100%;
+    flex-flow: row wrap;
+    min-height: 80%;
+}
+
+#montage {
+    position: relative;
+    width: 70%;
+    text-align: center;
+    padding: 7px 0;
+}
+
+#montage img {
+    max-height: 480px;
+    max-width: 640px;
+    width: 80%;
+}
+
+#montage .deletepic {
+    padding-bottom: 10px;
+}
+
+#montage #video, #montage #canvas {
+    max-width: 640px;
+    max-height: 480px;
+    width: 80%;
+}
+
+#userspic {
+    padding-top: 1.5%;
+    width: 30%;
+    text-align: center;
+}
+
+#userspic img {
+    max-width: 640px;
+    max-height: 480px;
+    width: 80%;
+    margin: 5px 0;
+}

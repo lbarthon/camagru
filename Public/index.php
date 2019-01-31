@@ -18,7 +18,7 @@ $url = $_GET['path'];
  * Setup variable, that add setup mvc to all the routes.
  * Set to true to disable setup page access.
  */
-$setup = false;
+$setup = true;
 /**
  * Router instanced and all routes added here.
  */

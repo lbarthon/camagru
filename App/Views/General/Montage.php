@@ -1,3 +1,5 @@
+<div id="montage_parent">
+<div id="montage">
 <h2>Montage</h2>
 <form action="" id="form_filter">
     <input type="radio" name="filter" id="Filtre">
@@ -5,20 +7,22 @@
     <input type="radio" name="filter" id="Aucun">
     <label for="Aucun"><p>Aucun</p></label>
 </form>
-<video id="video" width="640" height="480" autoplay></video>
-<button id="take">Prendre une photo</button>
-<canvas id="canvas" width="640" height="480"></canvas>
+<video id="video" autoplay></video><br>
+<button id="take">Prendre une photo</button><br>
+<canvas id="canvas"></canvas>
 <form action="add_pic" method="post" id="add_pic">
     <input type="hidden" name="picture" id="picture">
     <input type="hidden" name="token" value="<?= $token ?>">
     <input type="submit" name="add_pic" value="Poster ma photo">
 </form>
+</div>
+<div id="userspic">
 <?php
     foreach ($matches as $picture) {
 ?>
 <div class="montage_list">
     <img src="<?= $picture['img'] ?>">
-    <form action="/delete/<?= $picture['id'] ?>" method="post">
+    <form class="deletepic" action="/delete/<?= $picture['id'] ?>" method="post">
         <input type="hidden" name="token" value="<?= $token ?>">
         <input type="submit" name="delete" value="Supprimer cette photo">
     </form>
@@ -26,6 +30,8 @@
 <?php
     }
 ?>
+</div>
+</div>
 <script>
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
@@ -40,7 +46,7 @@
             for (var i = 0; i < filters.length; i++) {
                 if (filters[i].checked) {
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    if (filters[i].id != "none") {
+                    if (filters[i].id != "Aucun") {
                         base_image = new Image();
                         base_image.src = filters[i].nextElementSibling.childNodes[0].src;
                         base_image.onload = function(){
@@ -145,7 +151,17 @@
             event.preventDefault();
             return false;
         } else {
-            document.getElementById('picture').value = canvas.toDataURL('image/png');
+            var resized = document.createElement('canvas');
+            var resizedContext = resized.getContext('2d');
+            resized.height = "480";
+            resized.width = "640";
+            resizedContext.drawImage(canvas, 0, 0, 640, 480);
+            document.getElementById('picture').value = resized.toDataURL('image/png');
         }
     });
+
+    // window.addEventListener("load", event => {
+    //     canvas.setAttribute('width', video.width);
+    //     canvas.setAttribute('height', video.height);
+    // });
 </script>
