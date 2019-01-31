@@ -1,4 +1,4 @@
-<div id="picture">
+<div id="single_picture">
     <h3><?= $picture['username'] ?></h3>
     <img src="<?= $picture['img'] ?>">
     <p class="likes"><?= $picture['likes'] ?> likes</p>

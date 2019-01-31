@@ -1,5 +1,6 @@
+<div id="page">
 <?php
-    foreach ($matches as $picture) {
+foreach ($matches as $picture) {
 ?>
 <div class="picture">
     <h3><?= $picture['username'] ?></h3>
@@ -16,27 +17,28 @@
         <input type="submit" name="dislike" value="Unlike">
     </form>
 <?php
-    foreach ($picture['comments'] as $comment) {
-        echo "<p><b>" . $comment['username'] . "</b> " . $comment['comment'] . "</p><br>";
-    }
+foreach ($picture['comments'] as $comment) {
+    echo "<p class='comment'><b>" . $comment['username'] . "</b> " . $comment['comment'] . "</p><br>";
+}
 ?>
-    <form id="comment" class="comment" action="/comment/<?= $picture['id'] ?>" method="post">
+    <form class="comment_form" action="/comment/<?= $picture['id'] ?>" method="post">
         <input type="text" name="comment" placeholder="Votre commentaire...">
         <input type="hidden" name="token" value="<?= $token ?>">
         <input type="submit" name="submit" value="Comment">
     </form>
 </div>
 <?php
-    } if ($prevpage) {
+} if ($prevpage) {
 ?>
 <a href="/page/<?= $page - 1 ?>">Page précédente</a>
 <?php
-    } if ($nextpage) {
+} if ($nextpage) {
 ?>
 <a href="/page/<?= $page + 1 ?>">Page suivante</a>
 <?php 
-    }
+}
 ?>
+</div>
 <script>
     var like_forms = document.querySelectorAll('.picture form.like');
     like_forms.forEach(function(element) {
@@ -66,7 +68,7 @@
             }
         });
     });
-    var comment_forms = document.querySelectorAll('.picture form.comment');
+    var comment_forms = document.querySelectorAll('.picture form.comment_form');
     comment_forms.forEach(function(element) {
         element.addEventListener("submit", function(event) {
             event.preventDefault();
