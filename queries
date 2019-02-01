@@ -1,2 +1,0 @@
-#Select comments
-SELECT comment, username FROM comments INNER JOIN users ON comments.id_user = users.id ORDER BY comments.id DESC LIMIT 0,5 WHERE comments.id_picture = ?
