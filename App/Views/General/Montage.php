@@ -4,8 +4,12 @@
 <form action="." id="form_filter">
     <input type="radio" name="filter" id="Filtre">
     <label for="Filtre"><img src="/Pictures/Filters/Filtre.png" alt="Filtre"></label>
-    <input type="radio" name="filter" id="Blue">
-    <label for="Blue"><img src="/Pictures/Filters/Blue.png" alt="Blue"></label>
+    <input type="radio" name="filter" id="Eiffel">
+    <label for="Eiffel"><img src="/Pictures/Filters/Eiffel.png" alt="Main"></label>
+    <input type="radio" name="filter" id="Lunettes">
+    <label for="Lunettes"><img src="/Pictures/Filters/Lunettes.png" alt="Lunettes"></label>
+    <input type="radio" name="filter" id="Cigare">
+    <label for="Cigare"><img src="/Pictures/Filters/Cigare.png" alt="Cigare"></label>
     <input type="radio" name="filter" id="Aucun">
     <label for="Aucun">Aucun</label>
 </form>
