@@ -93,7 +93,8 @@ class UsersController extends Controller {
      * Function that's called when the user asks for a new password.
      */
     public function resetpw_ask() {
-        if (isset($_POST) && !empty($_POST) && isset($_POST['reset']) && !empty($_POST['reset'])) {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['reset']) && !empty($_POST['reset'])
+                && isset($_POST['mail']) && !empty($_POST['mail'])) {
             if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->createReset($_POST['mail'])) {
                     $this->_model->setFlash('popup', 'Mail envoyé!');
@@ -101,6 +102,8 @@ class UsersController extends Controller {
                     $this->_model->setFlash('popup', 'Erreur lors de l\'envoi du mail!\nAvez vous un compte?');
                 }
             }
+        } else {
+            $this->_model->setFlash('popup', "Veuillez préciser un mail!");
         }
         $this->redirect("/account");
     }
