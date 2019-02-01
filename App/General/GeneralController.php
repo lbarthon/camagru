@@ -35,7 +35,9 @@ class GeneralController extends Controller {
     public function montage() {
         if ($this->_model->islogged()) {
             $matches = $this->_model->getSessionUserPictures();
-            $this->render("General.Montage", compact('matches'));
+            $add_success = "<p class='flash_success'>" . $this->_model->getFlash('add_success') . "</p>";
+            $add_error = "<p class='flash_err'>" . $this->_model->getFlash('add_error') . "</p>";
+            $this->render("General.Montage", compact('matches', 'add_success', 'add_error'));
         } else {
             $this->redirect("/account");
         }

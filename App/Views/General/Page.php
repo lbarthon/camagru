@@ -3,7 +3,7 @@
 foreach ($matches as $picture) {
 ?>
 <div class="picture">
-    <h3><?= $picture['username'] ?></h3>
+    <h3><?= htmlspecialchars($picture['username']) ?></h3>
     <a href="/picture/<?= $picture['id'] ?>">
         <img src="<?= $picture['img'] ?>">
     </a>
@@ -18,7 +18,7 @@ foreach ($matches as $picture) {
     </form>
 <?php
 foreach ($picture['comments'] as $comment) {
-    echo "<p class='comment'><b>" . $comment['username'] . "</b> " . $comment['comment'] . "</p><br>";
+    echo "<p class='comment'><b>" . htmlspecialchars($comment['username']) . "</b> " . $comment['comment'] . "</p><br>";
 }
 ?>
     <form class="comment_form" action="/comment/<?= $picture['id'] ?>" method="post">
@@ -27,17 +27,23 @@ foreach ($picture['comments'] as $comment) {
         <input type="submit" name="submit" value="Comment">
     </form>
 </div>
+<p>
 <?php
 } if ($prevpage) {
 ?>
 <a href="/page/<?= $page - 1 ?>">Page précédente</a>
 <?php
-} if ($nextpage) {
+}
+?>
+<b>Page <?= $page + 1 ?> </b>
+<?php
+if ($nextpage) {
 ?>
 <a href="/page/<?= $page + 1 ?>">Page suivante</a>
 <?php 
 }
 ?>
+</p>
 </div>
 <script>
     var like_forms = document.querySelectorAll('.picture form.like');

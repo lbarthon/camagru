@@ -37,7 +37,7 @@ class UsersModel extends Model {
             $this->setFlash('login_err', "Nom d'utilisateur ou mot de passe incorrect!");
             return false;
         } catch (PDOException $e) {
-            $this->setFlash('create_err', "Erreur lors de la création de votre compte.");
+            $this->setFlash('login_err', "Erreur lors de la connection.");
             return false;
         }
     }
@@ -281,7 +281,6 @@ class UsersModel extends Model {
      */
     public function update($username, $email, $notifs, $pwd = null) {
         $old_username = $_SESSION['user'];
-        // TODO -- Notifs update
         try {
             $this->init();
         } catch (SqlException $e) {
@@ -289,7 +288,6 @@ class UsersModel extends Model {
             return;
         }
         try {
-            // TODO -- Test & debug
             $stmt = self::$_conn->prepare("SELECT id FROM users WHERE username=?");
             $stmt->execute([$old_username]);
             $match = $stmt->fetch();

@@ -13,7 +13,7 @@ header {
     display: flex;
     min-height: 5%;
     flex-flow: row wrap;
-    background-color: #9295a0;
+    background-color: #e8e8e8;
     justify-content: space-around;
     align-content: center;
 }
@@ -26,7 +26,7 @@ header > * {
 
 #center {
     min-height: 83%;
-    background-color: #b2b6c4;
+    background-color: #fafafa;
 }
 
 .flash_err {
@@ -41,7 +41,7 @@ header > * {
 footer {
     position: relative;
     min-height: 7%;
-    background-color: #9295a0;
+    background-color: #e8e8e8;
 }
 
 footer > h3 {
@@ -118,6 +118,11 @@ footer > .social-networks > div.social > a > img {
     width: 80%;
 }
 
+#page a {
+    text-decoration: none;
+    color: black;
+}
+
 /* Single picture page */
 #single_picture {
     width: 100%;
@@ -150,6 +155,36 @@ footer > .social-networks > div.social > a > img {
     padding: 7px 0;
 }
 
+#montage input[type="radio"] {
+    display: none;
+}
+
+#montage > #form_filter {
+    display: flex;
+    flex-flow: row wrap;
+    min-height: 120px;
+}
+
+#montage label {
+    margin: 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#montage label > img {
+    width: 100%;
+    min-width: 80px;
+    max-width: 160px;
+}
+
+#montage input[type="radio"]:checked+label {
+    background-color: #eaeaea;
+}
+
+#montage input[type="radio"]:checked+label > img {
+    background-color: #eaeaea;
+}
+
 #montage img {
     max-height: 480px;
     max-width: 640px;
@@ -177,4 +212,14 @@ footer > .social-networks > div.social > a > img {
     max-height: 480px;
     width: 80%;
     margin: 5px 0;
+}
+
+/* Reset password */
+#resetpw {
+    text-align: center;
+    margin-top: 8px;
+}
+
+#resetpw > input {
+    margin: 2px 0;
 }

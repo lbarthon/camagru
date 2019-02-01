@@ -35,12 +35,15 @@ class UsersController extends Controller {
      * Create form called here.
      */
     public function create() {
-        if (isset($_POST) && !empty($_POST) && isset($_POST['create']) && !empty($_POST['create'])) {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['create']) && !empty($_POST['create'])
+                && isset($_POST['username']) && !empty($_POST['username'])
+                && isset($_POST['mail']) && !empty($_POST['mail'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->isPwdSafe($_POST['password'])) {
                     $this->_model->addUser($_POST['username'], $_POST['mail'], $_POST['password']);
                 } else {
-                    $this->_model->setFlash('create_err', "Votre mot de passe n'est pas suffisamment sécurisé!");
+                    $this->_model->setFlash('create_err', "Votre mot de passe n'est pas suffisamment sécurisé!<br>" .
+                    "Veuillez mettre au moins : 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.");
                 }
                 $this->redirect("/account");
             }
@@ -64,7 +67,9 @@ class UsersController extends Controller {
      * Function called when an user edits his profile
      */
     public function edit() {
-        if (isset($_POST) && !empty($_POST) && isset($_POST['edit']) && !empty($_POST['edit'])) {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['edit']) && !empty($_POST['edit'])
+                && isset($_POST['username']) && !empty($_POST['username'])
+                && isset($_POST['email']) && !empty($_POST['email'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
                 $notifs = isset($_POST['notifs']) === true ? 1 : 0;
                 if (isset($_POST['password']) && $_POST['password'] !== "") {
@@ -78,6 +83,8 @@ class UsersController extends Controller {
                     $this->_model->update($_POST['username'], $_POST['email'], $notifs);
                 }
             }
+        } else {
+            $this->setFlash('edit_err', "Erreur lors de la modification de votre profil.");
         }
         $this->redirect("/account");
     }
@@ -103,7 +110,8 @@ class UsersController extends Controller {
      * Form also called here (1st part).
      */
     public function resetpw() {
-        if (isset($_POST) && !empty($_POST) && isset($_POST['confirm']) && !empty($_POST['confirm'])) {
+        if (isset($_POST) && !empty($_POST) && isset($_POST['confirm']) && !empty($_POST['confirm'])
+                && isset($_POST['email']) && !empty($_POST['email'])) {
             if ($this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->isPwdSafe($_POST['password'])) {
                     if ($this->_model->resetPw($_POST['email'], $_POST['password'])) {

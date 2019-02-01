@@ -320,6 +320,7 @@ class GeneralModel extends Model {
                 mail($match['email'], "Commentaire sur votre photo!",
                     "Votre photo a été commentée par " . $_SESSION['user'] . "!\n" .
                     "\"" . $comment . "\"\n" .
+                    "https://" . $_SERVER['HTTP_HOST'] . "/picture/" . $picture_id . "\n" .
                     "À bientôt sur Camagru!",
                     "From: camagru@barthonet.ovh\r\n");
             }

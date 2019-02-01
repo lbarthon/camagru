@@ -1,5 +1,5 @@
 <div id="single_picture">
-    <h3><?= $picture['username'] ?></h3>
+    <h3><?= htmlspecialchars($picture['username']) ?></h3>
     <img src="<?= $picture['img'] ?>">
     <p class="likes"><?= $picture['likes'] ?> likes</p>
     <form class="like" action="/like/<?= $picture['id'] ?>" method="post">
@@ -12,7 +12,7 @@
     </form>
 <?php
     foreach ($picture['comments'] as $comment) {
-        echo "<p><b>" . $comment['username'] . "</b> " . $comment['comment'] . "</p><br>";
+        echo "<p><b>" . htmlspecialchars($comment['username']) . "</b> " . $comment['comment'] . "</p><br>";
     }
 ?>
     <form id="comment" class="comment" action="/comment/<?= $picture['id'] ?>" method="post">
