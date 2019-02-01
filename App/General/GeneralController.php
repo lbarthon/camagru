@@ -48,7 +48,7 @@ class GeneralController extends Controller {
      */
     public function add_pic() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['add_pic']) && !empty($_POST['add_pic'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->addPicture($_POST['picture'])) {
                     $this->_model->setFlash("add_success", "Photo ajoutée avec succès!");
                     $this->redirect("/montage");
@@ -127,7 +127,7 @@ class GeneralController extends Controller {
      */
     public function delete() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['delete']) && !empty($_POST['delete'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if (!$this->_model->delete(explode("/", $this->_url)[1])) {
                     echo "error";
                 }
@@ -140,7 +140,7 @@ class GeneralController extends Controller {
      */
     public function like() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['like']) && !empty($_POST['like'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if (!$this->_model->like(explode("/", $this->_url)[1])) {
                     echo "error";
                 }
@@ -153,7 +153,7 @@ class GeneralController extends Controller {
      */
     public function dislike() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['dislike']) && !empty($_POST['dislike'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if (!$this->_model->dislike(explode("/", $this->_url)[1])) {
                     echo "error";
                 }
@@ -166,7 +166,7 @@ class GeneralController extends Controller {
      */
     public function comment() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['comment']) && !empty($_POST['comment'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if (!$this->_model->comment(explode("/", $this->_url)[1], $_POST['comment'])) {
                     echo "error";
                 }

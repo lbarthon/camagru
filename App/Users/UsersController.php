@@ -21,7 +21,7 @@ class UsersController extends Controller {
      */
     public function login() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['login']) && !empty($_POST['login'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->auth($_POST['username'], $_POST['password'])) {
                     $_SESSION['user'] = $_POST['username'];
                 }
@@ -38,7 +38,7 @@ class UsersController extends Controller {
         if (isset($_POST) && !empty($_POST) && isset($_POST['create']) && !empty($_POST['create'])
                 && isset($_POST['username']) && !empty($_POST['username'])
                 && isset($_POST['mail']) && !empty($_POST['mail'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->isPwdSafe($_POST['password'])) {
                     $this->_model->addUser($_POST['username'], $_POST['mail'], $_POST['password']);
                 } else {
@@ -70,7 +70,7 @@ class UsersController extends Controller {
         if (isset($_POST) && !empty($_POST) && isset($_POST['edit']) && !empty($_POST['edit'])
                 && isset($_POST['username']) && !empty($_POST['username'])
                 && isset($_POST['email']) && !empty($_POST['email'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 $notifs = isset($_POST['notifs']) === true ? 1 : 0;
                 if (isset($_POST['password']) && $_POST['password'] !== "") {
                     if ($this->_model->isPwdSafe($_POST['password'])) {
@@ -94,7 +94,7 @@ class UsersController extends Controller {
      */
     public function resetpw_ask() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['reset']) && !empty($_POST['reset'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->createReset($_POST['mail'])) {
                     $this->_model->setFlash('popup', 'Mail envoyé!');
                 } else {
@@ -112,7 +112,7 @@ class UsersController extends Controller {
     public function resetpw() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['confirm']) && !empty($_POST['confirm'])
                 && isset($_POST['email']) && !empty($_POST['email'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if ($this->_model->isPwdSafe($_POST['password'])) {
                     if ($this->_model->resetPw($_POST['email'], $_POST['password'])) {
                         $this->_model->removeUrl($this->_url);
@@ -148,7 +148,7 @@ class UsersController extends Controller {
      */
     public function logout() {
         if (isset($_POST) && !empty($_POST) && isset($_POST['logout']) && !empty($_POST['logout'])) {
-            if ($this->_model->compareTokens($_POST['token'])) {
+            if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 session_destroy();
             }
         }
