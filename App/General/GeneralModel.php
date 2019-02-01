@@ -269,6 +269,7 @@ class GeneralModel extends Model {
             if ($stmt->rowCount() > 0) return true;
             $stmt = self::$_conn->prepare("INSERT INTO likes (id_user, id_picture) VALUES (?,?)");
             $stmt->execute([$user_id, $picture_id]);
+            echo "good";
         } catch (PDOException $e) {
             return false;
         }
@@ -287,11 +288,12 @@ class GeneralModel extends Model {
         }
         try {
             $user_id = $this->getUserIdFromSessionUsername();
-            $stmt = self::$_conn->prepare("SELECT * FROM likes WHERE id_user=?");
-            $stmt->execute([$user_id]);
+            $stmt = self::$_conn->prepare("SELECT * FROM likes WHERE id_user=? AND id_picture=?");
+            $stmt->execute([$user_id, $picture_id]);
             if ($stmt->rowCount() === 0) return true;
             $stmt = self::$_conn->prepare("DELETE FROM likes WHERE id_user=? AND id_picture=?");
             $stmt->execute([$user_id, $picture_id]);
+            echo "good";
         } catch (PDOException $e) {
             return false;
         }
@@ -324,6 +326,7 @@ class GeneralModel extends Model {
                     "À bientôt sur Camagru!",
                     "From: camagru@barthonet.ovh\r\n");
             }
+            echo "good";
         } catch (PDOException $e) {
             return false;
         }

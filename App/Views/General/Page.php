@@ -16,14 +16,17 @@ foreach ($matches as $picture) {
         <input type="hidden" name="token" value="<?= $token ?>">
         <input type="submit" name="dislike" value="Unlike">
     </form>
+    <div class="pic_comments">
 <?php
 foreach ($picture['comments'] as $comment) {
     echo "<p class='comment'><b>" . htmlspecialchars($comment['username']) . "</b> " . $comment['comment'] . "</p><br>";
 }
 ?>
+    </div>
     <form class="comment_form" action="/comment/<?= $picture['id'] ?>" method="post">
         <input type="text" name="comment" placeholder="Votre commentaire...">
         <input type="hidden" name="token" value="<?= $token ?>">
+        <input type="hidden" name="username" value="<?php if (isset($_SESSION['user'])) { echo $_SESSION['user']; }?>">
         <input type="submit" name="submit" value="Comment">
     </form>
 </div>
@@ -45,61 +48,4 @@ if ($nextpage) {
 ?>
 </p>
 </div>
-<script>
-    var like_forms = document.querySelectorAll('.picture form.like');
-    like_forms.forEach(function(element) {
-        element.addEventListener("submit", function(event) {
-            event.preventDefault();
-            var req;
-            if (window.XMLHttpRequest) {
-                req = new XMLHttpRequest();
-            } else if (window.ActiveXObject) {
-                req = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            if (req != undefined) {
-                req.open("POST", element.action, true);
-                req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");   
-                var inputs = element.getElementsByTagName("input");
-                var sendstr = inputs[0].name + "=" + inputs[0].value + "&" + inputs[1].name + "=" + inputs[1].value;
-                req.send(sendstr);
-                req.onload = function (e) {
-                    if (req.readyState === 4 && req.status === 200) {
-                        if (req.responseText == "error") {
-                            window.location.href = "/account";
-                        } else {
-                            location.reload(true);
-                        }
-                    }
-                }
-            }
-        });
-    });
-    var comment_forms = document.querySelectorAll('.picture form.comment_form');
-    comment_forms.forEach(function(element) {
-        element.addEventListener("submit", function(event) {
-            event.preventDefault();
-            var req;
-            if (window.XMLHttpRequest) {
-                req = new XMLHttpRequest();
-            } else if (window.ActiveXObject) {
-                req = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            if (req != undefined) {
-                req.open("POST", element.action, true);
-                req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");   
-                var inputs = element.getElementsByTagName("input");
-                var sendstr = inputs[0].name + "=" + inputs[0].value + "&" + inputs[1].name + "=" + inputs[1].value;
-                req.send(sendstr);
-                req.onload = function (e) {
-                    if (req.readyState === 4 && req.status === 200) {
-                        if (req.responseText == "error") {
-                            window.location.href = "/account";
-                        } else {
-                            location.reload(true);
-                        }
-                    }
-                }
-            }
-        });
-    });
-</script>
+<script src="/Js/Pictures.js"></script>

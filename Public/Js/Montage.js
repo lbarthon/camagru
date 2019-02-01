@@ -24,35 +24,6 @@ function camera_setup() {
         }
         alert("Vous devez choisir un filtre!");
     });
-
-    var del_forms = document.querySelectorAll('.montage_list form');
-    del_forms.forEach(function(element) {
-        element.addEventListener("submit", event => {
-            event.preventDefault();
-            var req;
-            if (window.XMLHttpRequest) {
-                req = new XMLHttpRequest();
-            } else if (window.ActiveXObject) {
-                req = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            if (req != undefined) {
-                req.open("POST", element.action, true);
-                req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");   
-                var inputs = element.getElementsByTagName("input");
-                var sendstr = inputs[0].name + "=" + inputs[0].value + "&" + inputs[1].name + "=" + inputs[1].value;
-                req.send(sendstr);
-                req.onload = function (e) {
-                    if (req.readyState === 4 && req.status === 200) {
-                        if (req.responseText == "error") {
-                            window.location.href = "/account";
-                        } else {
-                            location.reload(true);
-                        }
-                    }
-                }
-            }
-        });
-    });
 }
 
 function no_camera() {
@@ -123,4 +94,34 @@ post.addEventListener("submit", event => {
         resizedContext.drawImage(canvas, 0, 0, 640, 480);
         document.getElementById('picture').value = resized.toDataURL('image/png');
     }
+});
+
+
+var del_forms = document.querySelectorAll('form.deletepic');
+del_forms.forEach(function(element) {
+    element.addEventListener("submit", event => {
+        event.preventDefault();
+        var req;
+        if (window.XMLHttpRequest) {
+            req = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            req = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        if (req != undefined) {
+            req.open("POST", element.action, true);
+            req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");   
+            var inputs = element.getElementsByTagName("input");
+            var sendstr = inputs[0].name + "=" + inputs[0].value + "&" + inputs[1].name + "=" + inputs[1].value;
+            req.send(sendstr);
+            req.onload = function (e) {
+                if (req.readyState === 4 && req.status === 200) {
+                    if (req.responseText == "error") {
+                        window.location.href = "/account";
+                    } else if (req.responseText == "good") {
+                        element.parentNode.parentNode.removeChild(element.parentElement);
+                    }
+                }
+            }
+        }
+    });
 });

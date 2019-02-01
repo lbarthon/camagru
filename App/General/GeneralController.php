@@ -130,6 +130,8 @@ class GeneralController extends Controller {
             if (isset($_POST['token']) && $this->_model->compareTokens($_POST['token'])) {
                 if (!$this->_model->delete(explode("/", $this->_url)[1])) {
                     echo "error";
+                } else {
+                    echo "good";
                 }
             }
         }
