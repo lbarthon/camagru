@@ -1,1 +1,1 @@
-<h1>Il n'y a actuellement aucune photo à afficher.</h1>
+<h1 style='text-align:center; margin-top:2%;'>Il n'y a actuellement aucune photo à afficher.</h1>

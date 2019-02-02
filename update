@@ -1,7 +1,3 @@
 #!/bin/bash
-if [ -n "$1" ] ; then 
-	scp -rP 2222 ./* root@51.77.202.107:/var/www/php/$1/
-	ssh -p 2222 -t root@51.77.202.107 chown -R www-data: /var/www
-else
-	echo "Please provide a folder in which you want to access data."
-fi
+scp -rP 2222 ./* root@51.77.202.107:/var/www/php/camagru/
+ssh -p 2222 -t root@51.77.202.107 chown -R www-data: /var/www

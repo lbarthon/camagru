@@ -36,6 +36,5 @@ class Router {
         }
         header('HTTP/1.0 404 Not Found');
         echo "<h1 style='text-align:center;'>Error 404 - Page not found</h1>";
-        echo '<h2>Debug -- URL = ' . $url . '</h2>';
     }
 }
