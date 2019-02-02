@@ -6,12 +6,33 @@ var snap = document.getElementById('take');
 var post =  document.getElementById('add_pic');
 var took = false;
 
+function turn_gray(my_context) {
+    var imageData = my_context.getImageData(0, 0, canvas.width, canvas.height);
+    for (j = 0; j < imageData.height; j++)
+    {
+        for (i = 0; i < imageData.width; i++)
+        {
+            var index = (j * 4) * imageData.width + (i * 4);
+            var red = imageData.data[index];
+            var green = imageData.data[index + 1];
+            var blue = imageData.data[index + 2];
+            var average = (red + green + blue) / 3;
+            imageData.data[index] = average;
+            imageData.data[index + 1] = average;
+            imageData.data[index + 2] = average;
+        }
+    }
+    my_context.putImageData(imageData, 0, 0);
+}
+
 function camera_setup() {
     snap.addEventListener("click", () => {
         for (var i = 0; i < filters.length; i++) {
             if (filters[i].checked) {
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                if (filters[i].id != "Aucun") {
+                if (filters[i].id == "Grayscale") {
+                    turn_gray(context);
+                } else if (filters[i].id != "Aucun") {
                     base_image = new Image();
                     base_image.src = filters[i].nextElementSibling.childNodes[0].src;
                     base_image.onload = function(){
@@ -27,10 +48,6 @@ function camera_setup() {
 }
 
 function no_camera() {
-    window.addEventListener("load", event => {
-        video.parentNode.removeChild(video);
-        snap.parentNode.removeChild(snap);
-    });
     var form_filter = document.getElementById('form_filter');
     var upload = document.createElement('form');
     var input = document.createElement('input');
@@ -51,7 +68,9 @@ function no_camera() {
                 for (var i = 0; i < filters.length; i++) {
                     if (filters[i].checked) {
                         context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        if (filters[i].id != "none") {
+                        if (filters[i].id == "Grayscale") {
+                            turn_gray(context);
+                        } else if (filters[i].id != "Aucun") {
                             base_image = new Image();
                             base_image.src = filters[i].nextElementSibling.childNodes[0].src;
                             base_image.onload = function(){
@@ -67,6 +86,8 @@ function no_camera() {
             };
         };
     });
+    video.parentNode.removeChild(video);
+    snap.parentNode.removeChild(snap);
 }
 
 if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {

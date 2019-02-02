@@ -10,6 +10,8 @@
     <label for="Lunettes"><img src="/Pictures/Filters/Lunettes.png" alt="Lunettes"></label>
     <input type="radio" name="filter" id="Cigare">
     <label for="Cigare"><img src="/Pictures/Filters/Cigare.png" alt="Cigare"></label>
+    <input type="radio" name="filter" id="Grayscale">
+    <label for="Grayscale">Niveaux de gris</label>
     <input type="radio" name="filter" id="Aucun">
     <label for="Aucun">Aucun</label>
 </form>
@@ -31,7 +33,7 @@
     foreach ($matches as $picture) {
 ?>
 <div class="montage_list">
-    <img src="<?= $picture['img'] ?>">
+    <a href="/picture/<?= $picture['id'] ?>"><img src="<?= $picture['img'] ?>"></a>
     <form class="deletepic" action="/delete/<?= $picture['id'] ?>" method="post">
         <input type="hidden" name="token" value="<?= $token ?>">
         <input type="submit" name="delete" value="Supprimer cette photo">

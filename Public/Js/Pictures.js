@@ -1,3 +1,7 @@
+function my_escape(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 var like_forms = document.querySelectorAll('form.like');
 like_forms.forEach(function(element) {
     element.addEventListener("submit", function(event) {
@@ -59,7 +63,7 @@ comment_forms.forEach(function(element) {
                         var comments = element.parentElement.querySelectorAll('.pic_comments')[0];
                         var new_comment = document.createElement('p');
                         var br = document.createElement('br');
-                        new_comment.innerHTML = '<b>' + inputs[2].value + '</b> ' + inputs[0].value;
+                        new_comment.innerHTML = '<b>' + my_escape(inputs[2].value) + '</b> ' + my_escape(inputs[0].value);
                         new_comment.setAttribute('class', 'comment');
                         comments.appendChild(new_comment);
                         comments.appendChild(br);
