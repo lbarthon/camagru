@@ -77,8 +77,8 @@ class SetupModel extends Model {
                 return;
             }
         }
-        if (!file_exists('Public/Users')) {
-            mkdir('Public/Users');
+        if (!file_exists('Public/Pictures/Users')) {
+            mkdir('Public/Pictures/Users');
         }
     }
 }

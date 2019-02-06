@@ -92,10 +92,12 @@ function no_camera() {
 
 if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        video.load();
         video.srcObject = stream;
         video.play();
         camera_setup();
     }).catch(function (err) {
+        console.error(err)
         no_camera();
     });
 } else {
